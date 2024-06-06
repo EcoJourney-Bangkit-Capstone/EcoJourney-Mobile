@@ -3,4 +3,6 @@
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
+    <string name="scan_your_waste">Scan Your Waste!</string>
+    <string name="scan_help">To get articles about your waste you need to take a picture</string>
 </resources>
