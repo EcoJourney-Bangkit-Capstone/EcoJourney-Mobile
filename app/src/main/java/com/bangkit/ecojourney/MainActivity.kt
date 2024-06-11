@@ -54,13 +54,35 @@ class MainActivity : AppCompatActivity() {
         // menu should be considered as top level destinations.
         val appBarConfiguration = AppBarConfiguration(
             setOf(
-                R.id.navigation_home, R.id.navigation_dashboard, R.id.navigation_notifications
+                R.id.navigation_home,
+                R.id.navigation_dashboard,
+                R.id.navigation_notifications,
             )
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
 
-        binding.scanBtn.setOnClickListener { startCameraX() }
+        navView.setOnItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.navigation_home -> {
+                    navController.navigate(R.id.navigation_home)
+                    true
+                }
+                R.id.navigation_dashboard -> {
+                    navController.navigate(R.id.navigation_dashboard)
+                    true
+                }
+                R.id.navigation_notifications -> {
+                    navController.navigate(R.id.navigation_notifications)
+                    true
+                }
+                R.id.navigation_scan -> {
+                    startCameraX()
+                    true
+                }
+                else -> false
+            }
+        }
     }
 
     private fun startCameraX() {

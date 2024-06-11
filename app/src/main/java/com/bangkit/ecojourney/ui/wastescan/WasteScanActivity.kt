@@ -1,27 +1,40 @@
 package com.bangkit.ecojourney.ui.wastescan
 
-import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.Color
+import android.graphics.Matrix
+import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.view.Gravity
 import android.view.OrientationEventListener
 import android.view.Surface
+import android.view.ViewGroup
+import android.view.Window
 import android.view.WindowInsets
 import android.view.WindowManager
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.camera.core.CameraSelector
-import androidx.camera.core.ImageCapture
-import androidx.camera.core.ImageCaptureException
-import androidx.camera.core.Preview
+import androidx.camera.core.*
+import androidx.camera.core.impl.utils.MatrixExt.postRotate
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
 import com.bangkit.ecojourney.databinding.ActivityWasteScanBinding
+import java.nio.ByteBuffer
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
+import com.bangkit.ecojourney.R
+import com.google.android.material.bottomsheet.BottomSheetDialog
 
 class WasteScanActivity : AppCompatActivity() {
     private lateinit var binding: ActivityWasteScanBinding
     private var cameraSelector: CameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
     private var imageCapture: ImageCapture? = null
+    private lateinit var cameraExecutor: ExecutorService
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,13 +42,8 @@ class WasteScanActivity : AppCompatActivity() {
         binding = ActivityWasteScanBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        binding.switchCamera.setOnClickListener {
-            cameraSelector =
-                if (cameraSelector == CameraSelector.DEFAULT_BACK_CAMERA) CameraSelector.DEFAULT_FRONT_CAMERA
-                else CameraSelector.DEFAULT_BACK_CAMERA
-            startCamera()
-        }
         binding.captureImage.setOnClickListener { takePhoto() }
+        cameraExecutor = Executors.newSingleThreadExecutor()
     }
 
     public override fun onResume() {
@@ -69,7 +77,7 @@ class WasteScanActivity : AppCompatActivity() {
             } catch (exc: Exception) {
                 Toast.makeText(
                     this@WasteScanActivity,
-                    "Gagal memunculkan kamera.",
+                    "Failed to show camera.",
                     Toast.LENGTH_SHORT
                 ).show()
                 Log.e(TAG, "startCamera: ${exc.message}")
@@ -78,11 +86,61 @@ class WasteScanActivity : AppCompatActivity() {
     }
 
     private fun takePhoto() {
-        Toast.makeText(
-            this@WasteScanActivity,
-            "Take A Photo.",
-            Toast.LENGTH_SHORT
-        ).show()
+        val imageCapture = imageCapture ?: return
+
+        imageCapture.takePicture(ContextCompat.getMainExecutor(this), object : ImageCapture.OnImageCapturedCallback() {
+            override fun onCaptureSuccess(image: ImageProxy) {
+                val bitmap = imageToBitmap(image)
+                showBottomSheet(bitmap)
+                image.close()
+            }
+
+            override fun onError(exception: ImageCaptureException) {
+                Toast.makeText(
+                    this@WasteScanActivity,
+                    "Failed to take photo.",
+                    Toast.LENGTH_SHORT
+                ).show()
+                Log.e(TAG, "Photo capture failed: ${exception.message}", exception)
+            }
+        })
+    }
+
+    private fun imageToBitmap(image: ImageProxy): Bitmap {
+        val buffer: ByteBuffer = image.planes[0].buffer
+        val bytes = ByteArray(buffer.remaining())
+        buffer.get(bytes)
+
+        val rotationDegrees = image.imageInfo.rotationDegrees
+        val bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
+
+        // Rotate the bitmap if necessary
+        return when (rotationDegrees) {
+            90 -> rotateBitmap(bitmap, 90f)
+            180 -> rotateBitmap(bitmap, 180f)
+            270 -> rotateBitmap(bitmap, 270f)
+            else -> bitmap
+        }
+    }
+
+    private fun rotateBitmap(bitmap: Bitmap, degrees: Float): Bitmap {
+        val matrix = Matrix().apply { postRotate(degrees) }
+        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
+    }
+
+    private fun showBottomSheet(bitmap: Bitmap) {
+        val dialog = BottomSheetDialog(this)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setContentView(R.layout.fragment_scan_result)
+
+        dialog.findViewById<ImageView>(R.id.imageView)?.setImageBitmap(bitmap)
+
+        dialog.show()
+        dialog.behavior.isDraggable = true
+        dialog.window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        dialog.window?.attributes?.windowAnimations = R.style.DialogAnimation
+        dialog.window?.setGravity(Gravity.BOTTOM)
     }
 
     private fun hideSystemUI() {
@@ -98,33 +156,9 @@ class WasteScanActivity : AppCompatActivity() {
         supportActionBar?.hide()
     }
 
-    private val orientationEventListener by lazy {
-        object : OrientationEventListener(this) {
-            override fun onOrientationChanged(orientation: Int) {
-                if (orientation == ORIENTATION_UNKNOWN) {
-                    return
-                }
-
-                val rotation = when (orientation) {
-                    in 45 until 135 -> Surface.ROTATION_270
-                    in 135 until 225 -> Surface.ROTATION_180
-                    in 225 until 315 -> Surface.ROTATION_90
-                    else -> Surface.ROTATION_0
-                }
-
-                imageCapture?.targetRotation = rotation
-            }
-        }
-    }
-
-    override fun onStart() {
-        super.onStart()
-        orientationEventListener.enable()
-    }
-
-    override fun onStop() {
-        super.onStop()
-        orientationEventListener.disable()
+    override fun onDestroy() {
+        super.onDestroy()
+        cameraExecutor.shutdown()
     }
 
     companion object {

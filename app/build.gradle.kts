@@ -53,6 +53,7 @@ dependencies {
     implementation(libs.camera.view)
     implementation(libs.androidx.fragment.ktx)
     implementation(libs.androidx.activity)
+    implementation(libs.androidx.legacy.support.v4)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
