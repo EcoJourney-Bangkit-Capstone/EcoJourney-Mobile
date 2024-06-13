@@ -3,4 +3,14 @@
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
+    <string name="scan_your_waste">Scan Your Waste!</string>
+    <string name="scan_help">To get articles about your waste you need to take a picture</string>
+    <string name="scan">Scan</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="scan_result_image">Scan Result image</string>
+    <string name="waste_type">Waste Type</string>
+    <string name="view_articles"><![CDATA[View Articles >]]></string>
+    <string name="scan_results">Scan Results</string>
+    <string name="title_waste_scan">Waste Scan</string>
 </resources>
