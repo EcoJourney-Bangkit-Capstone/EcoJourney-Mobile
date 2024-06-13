@@ -14,7 +14,6 @@ import android.Manifest
 import android.content.Intent
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
-import com.bangkit.ecojourney.ui.wastescan.WasteScanActivity
 
 class MainActivity : AppCompatActivity() {
 
@@ -57,39 +56,13 @@ class MainActivity : AppCompatActivity() {
                 R.id.navigation_home,
                 R.id.navigation_dashboard,
                 R.id.navigation_notifications,
+                R.id.navigation_scan,
             )
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
 
-        navView.setOnItemSelectedListener { item ->
-            when (item.itemId) {
-                R.id.navigation_home -> {
-                    navController.navigate(R.id.navigation_home)
-                    true
-                }
-                R.id.navigation_dashboard -> {
-                    navController.navigate(R.id.navigation_dashboard)
-                    true
-                }
-                R.id.navigation_notifications -> {
-                    navController.navigate(R.id.navigation_notifications)
-                    true
-                }
-                R.id.navigation_scan -> {
-                    startCameraX()
-                    true
-                }
-                else -> false
-            }
-        }
     }
-
-    private fun startCameraX() {
-        val intent = Intent(this, WasteScanActivity::class.java)
-        startActivity(intent)
-    }
-
 
     companion object {
         private const val REQUIRED_PERMISSION = Manifest.permission.CAMERA

@@ -2,72 +2,74 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.wastescan.WasteScanActivity">
+    android:fitsSystemWindows="true"
+    tools:context=".ui.wastescan.WasteScanFragment">
 
     <TextView
         android:id="@+id/pageTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
         android:text="@string/scan_your_waste"
         android:textColor="@color/black"
         android:textSize="34sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@id/pageDesc"
+        android:layout_marginTop="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/pageDesc"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="75dp"
-        android:layout_marginTop="16dp"
         android:gravity="center"
         android:text="@string/scan_help"
         android:textColor="@color/black"
         android:textSize="14sp"
-        app:layout_constraintBottom_toTopOf="@id/viewFinderContainer"
-        app:layout_constraintEnd_toEndOf="@id/pageTitle"
-        app:layout_constraintStart_toStartOf="@id/pageTitle"
-        app:layout_constraintTop_toTopOf="@id/pageTitle" />
-
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/pageTitle" />
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/viewFinderContainer"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_marginTop="160dp"
-        android:layout_marginBottom="140dp"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_margin="16dp"
         app:cardCornerRadius="16dp"
-        app:layout_constraintBottom_toTopOf="@+id/captureImage"
+        app:layout_constraintBottom_toTopOf="@id/captureImage"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/pageTitle"
-        app:layout_constraintVertical_bias="0.5">
+        app:layout_constraintTop_toBottomOf="@id/pageDesc">
 
         <androidx.camera.view.PreviewView
             android:id="@+id/viewFinder"
-            android:layout_width="360dp"
+            android:layout_width="match_parent"
             android:layout_height="match_parent" />
     </com.google.android.material.card.MaterialCardView>
-
 
     <ImageButton
         android:id="@+id/captureImage"
         android:layout_width="64dp"
         android:layout_height="64dp"
-        android:layout_marginBottom="32dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="36dp"
+        app:layout_constraintBottom_toTopOf="@id/nav_view"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:srcCompat="@drawable/ic_capture"
-        android:background="@drawable/circle"/>
+        android:background="@drawable/circle" />
 
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:visibility="invisible"
+        android:id="@+id/nav_view"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="0dp"
+        android:layout_marginEnd="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

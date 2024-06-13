@@ -18,6 +18,12 @@
         tools:layout="@layout/fragment_dashboard" />
 
     <fragment
+        android:id="@+id/navigation_scan"
+        android:name="com.bangkit.ecojourney.ui.wastescan.WasteScanFragment"
+        android:label="@string/title_waste_scan"
+        tools:layout="@layout/fragment_waste_scan" />
+
+    <fragment
         android:id="@+id/navigation_notifications"
         android:name="com.bangkit.ecojourney.ui.notifications.NotificationsFragment"
         android:label="@string/title_notifications"

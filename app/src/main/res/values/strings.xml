@@ -9,4 +9,8 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="scan_result_image">Scan Result image</string>
+    <string name="waste_type">Waste Type</string>
+    <string name="view_articles"><![CDATA[View Articles >]]></string>
+    <string name="scan_results">Scan Results</string>
+    <string name="title_waste_scan">Waste Scan</string>
 </resources>
