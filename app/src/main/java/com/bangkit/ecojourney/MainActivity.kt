@@ -54,13 +54,17 @@ class MainActivity : AppCompatActivity() {
         val appBarConfiguration = AppBarConfiguration(
             setOf(
                 R.id.navigation_home,
-                R.id.navigation_dashboard,
-                R.id.navigation_notifications,
+                R.id.navigation_articles,
+                R.id.navigation_history,
                 R.id.navigation_scan,
             )
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
+
+        binding.fab.setOnClickListener {
+            navController.navigate(R.id.navigation_scan)
+        }
 
     }
 
