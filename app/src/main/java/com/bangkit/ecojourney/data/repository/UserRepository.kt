@@ -23,6 +23,10 @@ class UserRepository private constructor(
         userPreference.logout()
     }
 
+    suspend fun register(name: String, email: String, password: String, confirmPassword: String): String {
+        return "Register : $name, $email, $password, $confirmPassword"
+    }
+
     suspend fun login(email: String, password: String): String {
         val user = UserModel(
             email = email,

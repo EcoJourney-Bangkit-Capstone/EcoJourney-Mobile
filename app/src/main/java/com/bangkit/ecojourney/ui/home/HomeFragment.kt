@@ -6,14 +6,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.activity.viewModels
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
 import com.bangkit.ecojourney.databinding.FragmentHomeBinding
 import com.bangkit.ecojourney.ui.ViewModelFactory
-import com.bangkit.ecojourney.ui.login.LoginActivity
-import com.bangkit.ecojourney.ui.login.LoginViewModel
+import com.bangkit.ecojourney.ui.onboarding.LoginActivity
 
 class HomeFragment : Fragment() {
     private val homeViewModel by viewModels<HomeViewModel> {

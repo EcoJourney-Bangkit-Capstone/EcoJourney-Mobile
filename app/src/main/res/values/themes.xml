@@ -15,9 +15,6 @@
 
         <item name="bottomSheetDialogTheme">@style/AppBottomSheetDialogTheme</item>
 
-<!--        <item name="android:textViewStyle">@style/InterTextViewStyle</item>-->
-<!--        <item name="android:buttonStyle">@style/InterButtonStyle</item>-->
-
     </style>
 
     <style name="AppBottomSheetDialogTheme"
@@ -34,12 +31,4 @@
         <item name="android:windowEnterAnimation">@anim/slide_in_bottom</item>
         <item name="android:windowExitAnimation">@anim/slide_out_bottom</item>
     </style>
-
-<!--    <style name="InterTextViewStyle" parent="android:Widget.TextView">-->
-<!--        <item name="android:fontFamily">sans-serif-light</item>-->
-<!--    </style>-->
-
-<!--    <style name="InterButtonStyle" parent="android:Widget.Holo.Button">-->
-<!--        <item name="android:fontFamily">sans-serif-light</item>-->
-<!--    </style>-->
 </resources>

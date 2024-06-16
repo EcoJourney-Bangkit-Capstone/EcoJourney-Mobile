@@ -1,34 +1,29 @@
-package com.bangkit.ecojourney.ui.login
+package com.bangkit.ecojourney.ui.onboarding
 
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.view.WindowInsets
 import android.view.WindowManager
-import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import com.bangkit.ecojourney.MainActivity
-import com.bangkit.ecojourney.R
-import com.bangkit.ecojourney.databinding.ActivityLoginBinding
+import com.bangkit.ecojourney.databinding.ActivityRegisterBinding
 import com.bangkit.ecojourney.ui.ViewModelFactory
 
-class LoginActivity : AppCompatActivity() {
-    private val viewModel by viewModels<LoginViewModel> {
+class RegisterActivity : AppCompatActivity() {
+    private val viewModel by viewModels<OnBoardingViewModel> {
         ViewModelFactory.getInstance(this)
     }
-    private lateinit var binding: ActivityLoginBinding
+    private lateinit var binding: ActivityRegisterBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityLoginBinding.inflate(layoutInflater)
+        binding = ActivityRegisterBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         setupView()
         setupAction()
+
     }
 
     private fun setupView() {
@@ -46,16 +41,24 @@ class LoginActivity : AppCompatActivity() {
 
     private fun setupAction() {
         binding.loginButton.setOnClickListener {
+            val intent = Intent(this, LoginActivity::class.java)
+            startActivity(intent)
+            finish()
+        }
+
+        binding.registerButton.setOnClickListener {
             val email = binding.emailEditText.text.toString()
             val password = binding.passwordEditText.text.toString()
+            val confirmPassword = binding.confirmPasswordEditText.text.toString()
+            val name = binding.nameEditText.text.toString()
 
-            viewModel.login(email, password)
+            viewModel.register(name, email, password, confirmPassword)
 
-            viewModel.loginResponse.observe(this) {
-                startActivity(Intent(this, MainActivity::class.java))
+            viewModel.registerResponse.observe(this) {
+                val intent = Intent(this, LoginActivity::class.java)
+                startActivity(intent)
                 finish()
             }
-
         }
     }
 }

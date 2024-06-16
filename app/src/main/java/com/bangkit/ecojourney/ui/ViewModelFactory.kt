@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.bangkit.ecojourney.data.repository.UserRepository
 import com.bangkit.ecojourney.di.Injection
 import com.bangkit.ecojourney.ui.home.HomeViewModel
-import com.bangkit.ecojourney.ui.login.LoginViewModel
+import com.bangkit.ecojourney.ui.onboarding.OnBoardingViewModel
 import com.bangkit.ecojourney.ui.splashscreen.SplashScreenViewModel
 
 class ViewModelFactory(private val userRepository: UserRepository
@@ -18,8 +18,8 @@ class ViewModelFactory(private val userRepository: UserRepository
             modelClass.isAssignableFrom(SplashScreenViewModel::class.java) -> {
                 SplashScreenViewModel(userRepository) as T
             }
-            modelClass.isAssignableFrom(LoginViewModel::class.java) -> {
-                LoginViewModel(userRepository) as T
+            modelClass.isAssignableFrom(OnBoardingViewModel::class.java) -> {
+                OnBoardingViewModel(userRepository) as T
             }
             modelClass.isAssignableFrom(HomeViewModel::class.java) -> {
                 HomeViewModel(userRepository) as T

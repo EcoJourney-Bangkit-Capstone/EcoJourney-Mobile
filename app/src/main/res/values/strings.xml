@@ -32,4 +32,14 @@
     <string name="forgot_password">Forgot Password ?</string>
     <string name="dont_have_account">Don\'t have an account?</string>
     <string name="email_hint">Enter your email</string>
+    <string name="create_new_account">Create new account</string>
+    <string name="eco">Eco</string>
+    <string name="journey">Journey</string>
+    <string name="onBoardingMessageTitle">Make Impact</string>
+    <string name="onBoardingMessage">Sign up today and let\'s start the journey towards a healthy and sustainable environment.</string>
+    <string name="create_account">Create Account</string>
+    <string name="have_account">Have account?</string>
+    <string name="log_in">Log In</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="sign_up">Sign Up</string>
 </resources>

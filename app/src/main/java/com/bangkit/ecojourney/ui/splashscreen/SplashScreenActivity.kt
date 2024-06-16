@@ -11,7 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.bangkit.ecojourney.MainActivity
 import com.bangkit.ecojourney.R
 import com.bangkit.ecojourney.ui.ViewModelFactory
-import com.bangkit.ecojourney.ui.login.LoginActivity
+import com.bangkit.ecojourney.ui.onboarding.OnBoardingActivity
 
 class SplashScreenActivity : AppCompatActivity() {
     private val viewModel by viewModels<SplashScreenViewModel> {
@@ -32,7 +32,7 @@ class SplashScreenActivity : AppCompatActivity() {
         Handler(Looper.getMainLooper()).postDelayed({
             viewModel.getSession().observe(this) { user ->
                 if (!user.isLogin) {
-                    startActivity(Intent(this, LoginActivity::class.java))
+                    startActivity(Intent(this, OnBoardingActivity::class.java))
                     finish()
                 } else {
                     startActivity(Intent(this, MainActivity::class.java))
