@@ -19,7 +19,7 @@ legacySupportV4 = "1.0.0"
 tensorflow = "0.4.4"
 playServicesTflGpu = "16.2.0"
 playServicesTflSup = "16.1.0"
-taskVisionPlayService = "0.4.2"
+taskVision = "0.4.0"
 tfliteGpu = "2.9.0"
 
 [libraries]
@@ -41,9 +41,11 @@ androidx-fragment-ktx = { group = "androidx.fragment", name = "fragment-ktx", ve
 androidx-activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
 androidx-legacy-support-v4 = { group = "androidx.legacy", name = "legacy-support-v4", version.ref = "legacySupportV4" }
 tensorflow-metadata = {group = "org.tensorflow", name = "tensorflow-lite-metadata", version.ref = "tensorflow"}
+tensorflow-support = {group = "org.tensorflow", name = "tensorflow-lite-support", version.ref = "tensorflow"}
 play-services-tflite-support = {group = "com.google.android.gms", name = "play-services-tflite-support", version.ref = "playServicesTflSup"}
 play-services-tflite-gpu = {group = "com.google.android.gms", name = "play-services-tflite-gpu", version.ref = "playServicesTflGpu"}
-tensorflow-task-vision-play-service = {group = "org.tensorflow", name= "tensorflow-lite-task-vision-play-services", version.ref = "taskVisionPlayService"}
+tensorflow-task-vision = {group = "org.tensorflow", name= "tensorflow-lite-task-vision", version.ref = "taskVision"}
+tensorflow-lite-gpu-delegate = {group = "org.tensorflow", name = "tensorflow-lite-gpu-delegate-plugin", version.ref = "taskVision"}
 tensorflow-lite-gpu = {group = "org.tensorflow", name = "tensorflow-lite-gpu", version.ref = "tfliteGpu"}
 
 [plugins]

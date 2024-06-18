@@ -24,13 +24,6 @@
         android:textSize="28sp"
         android:gravity="center"/>
 
-    <ImageView
-        android:id="@+id/scanImage"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/img_placeholder"
-        android:layout_gravity="top|center"/>
-
     <!-- Your content here -->
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -40,6 +33,13 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/scanImage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/img_placeholder"
+                android:layout_gravity="top|center"/>
 
             <!-- Your expandable and scrollable content here -->
             <androidx.recyclerview.widget.RecyclerView
