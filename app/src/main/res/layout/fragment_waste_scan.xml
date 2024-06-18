@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
     tools:context=".ui.wastescan.WasteScanFragment">
 
     <TextView
@@ -12,10 +11,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/scan_your_waste"
-        android:textColor="@color/black"
+        android:textColor="@color/white"
         android:textSize="34sp"
         android:textStyle="bold"
         android:layout_marginTop="10dp"
+        android:elevation="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -27,28 +27,23 @@
         android:layout_marginHorizontal="75dp"
         android:gravity="center"
         android:text="@string/scan_help"
-        android:textColor="@color/black"
+        android:textColor="@color/white"
         android:textSize="14sp"
+        android:elevation="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/pageTitle" />
 
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/viewFinderContainer"
+    <androidx.camera.view.PreviewView
+        android:id="@+id/viewFinder"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_margin="16dp"
-        app:cardCornerRadius="16dp"
-        app:layout_constraintBottom_toTopOf="@id/captureImage"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/pageDesc">
+        android:layout_height="match_parent"
+        app:scaleType="fillStart"/>
 
-        <androidx.camera.view.PreviewView
-            android:id="@+id/viewFinder"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-    </com.google.android.material.card.MaterialCardView>
+    <com.bangkit.ecojourney.ui.customui.OverlayView
+        android:id="@+id/overlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
     <ImageButton
         android:id="@+id/captureImage"

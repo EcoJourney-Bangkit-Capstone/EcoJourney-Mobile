@@ -1,6 +1,7 @@
 package com.bangkit.ecojourney.ui.wastescan
 
-import android.app.Dialog
+import android.annotation.SuppressLint
+import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
@@ -13,6 +14,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.camera.core.*
@@ -22,67 +24,191 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import java.nio.ByteBuffer
-import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import com.bangkit.ecojourney.R
 import com.bangkit.ecojourney.adapter.ScanResultAdapter
 import com.bangkit.ecojourney.data.ScanResult
+import com.bangkit.ecojourney.data.WasteScanned
 import com.bangkit.ecojourney.databinding.FragmentWasteScanBinding
+import com.bangkit.ecojourney.utils.ObjectDetectorHelper
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import org.tensorflow.lite.task.vision.detector.Detection
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.LinkedList
+import java.util.Locale
+import java.util.concurrent.ExecutorService
 
-class WasteScanFragment : Fragment() {
+class WasteScanFragment : Fragment(), ObjectDetectorHelper.DetectorListener {
     private lateinit var binding: FragmentWasteScanBinding
-    private var cameraSelector: CameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
+    private lateinit var objectDetectorHelper: ObjectDetectorHelper
+    private lateinit var bitmapBuffer: Bitmap
+    private var preview: Preview? = null
+    private var imageAnalyzer: ImageAnalysis? = null
+    private var camera: Camera? = null
+    private var cameraProvider: ProcessCameraProvider? = null
     private var imageCapture: ImageCapture? = null
     private lateinit var cameraExecutor: ExecutorService
+
+    var wasteTypeScanned: MutableList<Detection>? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FragmentWasteScanBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
         binding.captureImage.setOnClickListener { takePhoto() }
-        cameraExecutor = Executors.newSingleThreadExecutor()
 
-        startCamera()
         return root
     }
 
-    private fun startCamera() {
-        val cameraProviderFuture = ProcessCameraProvider.getInstance(requireActivity())
+    @SuppressLint("MissingPermission")
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-        cameraProviderFuture.addListener({
-            val cameraProvider: ProcessCameraProvider = cameraProviderFuture.get()
-            val preview = Preview.Builder()
+        initializeObjectDetector()
+
+        cameraExecutor = Executors.newSingleThreadExecutor()
+
+        binding.viewFinder.post {
+            setUpCamera()
+        }
+    }
+
+    private fun initializeObjectDetector() {
+        try {
+            objectDetectorHelper = ObjectDetectorHelper(
+                context = requireContext(),
+                objectDetectorListener = this
+            )
+        } catch (e: Exception) {
+            Log.e(TAG, "Object detector initialization failed", e)
+            Toast.makeText(requireContext(), "Failed to initialize object detector", Toast.LENGTH_LONG).show()
+        }
+    }
+
+    private fun setUpCamera() {
+        val cameraProviderFuture = ProcessCameraProvider.getInstance(requireContext())
+        cameraProviderFuture.addListener(
+            {
+                // CameraProvider
+                cameraProvider = cameraProviderFuture.get()
+
+                // Build and bind the camera use cases
+                bindCameraUseCases()
+            },
+            ContextCompat.getMainExecutor(requireContext())
+        )
+    }
+
+    @SuppressLint("UnsafeOptInUsageError")
+    private fun bindCameraUseCases() {
+
+        // CameraProvider
+        val cameraProvider =
+            cameraProvider ?: throw IllegalStateException("Camera initialization failed.")
+
+        // CameraSelector - makes assumption that we're only using the back camera
+        val cameraSelector =
+            CameraSelector.Builder().requireLensFacing(CameraSelector.LENS_FACING_BACK).build()
+
+        // Preview. Only using the 4:3 ratio because this is the closest to our models
+        preview =
+            Preview.Builder()
+                .setTargetAspectRatio(AspectRatio.RATIO_4_3)
+                .setTargetRotation(binding.viewFinder.display.rotation)
                 .build()
+
+        // ImageAnalysis. Using RGBA 8888 to match how our models work
+        imageAnalyzer =
+            ImageAnalysis.Builder()
+                .setTargetAspectRatio(AspectRatio.RATIO_4_3)
+                .setTargetRotation(binding.viewFinder.display.rotation)
+                .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
+                .setOutputImageFormat(ImageAnalysis.OUTPUT_IMAGE_FORMAT_RGBA_8888)
+                .build()
+                // The analyzer can then be assigned to the instance
                 .also {
-                    it.setSurfaceProvider(binding.viewFinder.surfaceProvider)
+                    it.setAnalyzer(cameraExecutor) { image ->
+                        if (!::bitmapBuffer.isInitialized) {
+                            // The image rotation and RGB image buffer are initialized only once
+                            // the analyzer has started running
+                            bitmapBuffer = Bitmap.createBitmap(
+                                image.width,
+                                image.height,
+                                Bitmap.Config.ARGB_8888
+                            )
+                        }
+
+                        detectObjects(image)
+                    }
                 }
 
-            imageCapture = ImageCapture.Builder().build()
+        imageCapture = ImageCapture.Builder()
+            .setTargetAspectRatio(AspectRatio.RATIO_4_3)
+            .setTargetRotation(binding.viewFinder.display.rotation)
+            .build()
 
-            try {
-                cameraProvider.unbindAll()
-                cameraProvider.bindToLifecycle(
-                    this,
-                    cameraSelector,
-                    preview,
-                    imageCapture
-                )
+        // Must unbind the use-cases before rebinding them
+        cameraProvider.unbindAll()
 
-            } catch (exc: Exception) {
-                Toast.makeText(
-                    requireActivity(),
-                    "Failed to show camera.",
-                    Toast.LENGTH_SHORT
-                ).show()
-                Log.e(TAG, "startCamera: ${exc.message}")
-            }
-        }, ContextCompat.getMainExecutor(requireActivity()))
+        try {
+            // A variable number of use-cases can be passed here -
+            // camera provides access to CameraControl & CameraInfo
+            camera = cameraProvider.bindToLifecycle(this, cameraSelector, preview, imageAnalyzer, imageCapture)
+
+            // Attach the viewfinder's surface provider to preview use case
+            preview?.setSurfaceProvider(binding.viewFinder.surfaceProvider)
+        } catch (exc: Exception) {
+            Log.e(TAG, "Use case binding failed", exc)
+        }
+    }
+
+    private fun detectObjects(image: ImageProxy) {
+        // Copy out RGB bits to the shared bitmap buffer
+        image.use { bitmapBuffer.copyPixelsFromBuffer(image.planes[0].buffer) }
+
+        val imageRotation = image.imageInfo.rotationDegrees
+        // Pass Bitmap and rotation to the object detector helper for processing and detection
+        objectDetectorHelper.detect(bitmapBuffer, imageRotation)
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        imageAnalyzer?.targetRotation = binding.viewFinder.display.rotation
+    }
+
+    // Update UI after objects have been detected. Extracts original image height/width
+    // to scale and place bounding boxes properly through OverlayView
+    override fun onResults(
+        results: MutableList<Detection>?,
+        inferenceTime: Long,
+        imageHeight: Int,
+        imageWidth: Int
+    ) {
+        activity?.runOnUiThread {
+            // Pass necessary information to OverlayView for drawing on the canvas
+            binding.overlay.setResults(
+                results ?: LinkedList<Detection>(),
+                imageHeight,
+                imageWidth
+            )
+
+            wasteTypeScanned = results
+
+            // Force a redraw
+            binding.overlay.invalidate()
+        }
+    }
+
+    override fun onError(error: String) {
+        activity?.runOnUiThread {
+            Toast.makeText(requireContext(), error, Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun takePhoto() {
@@ -91,7 +217,21 @@ class WasteScanFragment : Fragment() {
         imageCapture.takePicture(ContextCompat.getMainExecutor(requireActivity()), object : ImageCapture.OnImageCapturedCallback() {
             override fun onCaptureSuccess(image: ImageProxy) {
                 val bitmap = imageToBitmap(image)
-                showBottomSheet(bitmap)
+                val dateTime = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(Date())
+
+                val setOfWasteType = HashSet<String>()
+
+                for (detection in wasteTypeScanned!!) {
+                    for (category in detection.categories) {
+                        setOfWasteType.add(category.label)
+                    }
+                }
+
+                val listOfWasteScanned = setOfWasteType.map { WasteScanned(it) }
+
+                val wasteScanResult = ScanResult(listOfWasteScanned, dateTime, bitmap)
+
+                showBottomSheet(wasteScanResult)
                 image.close()
             }
 
@@ -128,37 +268,30 @@ class WasteScanFragment : Fragment() {
         return Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
     }
 
-    private fun showBottomSheet(bitmap: Bitmap) {
+    private fun showBottomSheet(scanResult: ScanResult) {
         val dialog = BottomSheetDialog(requireActivity())
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.setContentView(R.layout.fragment_scan_result)
+        dialog.findViewById<ImageView>(R.id.scanImage)?.setImageBitmap(scanResult.image)
 
         dialog.show()
         setDialogBehaviour(dialog)
 
-        // TODO: DONT FORGET TO DELETE THIS WHEN REAL IMPLEMENTATION IS DONE
-        val dummyScanResults = listOf(
-            ScanResult("Product 1", 2),
-            ScanResult("Product 2", 2),
-            ScanResult("Product 3", 2),
-            ScanResult("Product 4", 2),
-        )
-
         val recyclerView = dialog.findViewById<RecyclerView>(R.id.rvScanResults)
         recyclerView?.layoutManager = LinearLayoutManager(requireActivity())
-        val adapter = ScanResultAdapter(dummyScanResults) { position ->
-            val scanResult = dummyScanResults[position]
-            onItemClicked(scanResult)
+        val adapter = ScanResultAdapter(scanResult.wasteScanned) { position ->
+            val wasteScanned = scanResult.wasteScanned[position]
+            onItemClicked(wasteScanned)
         }
         recyclerView?.adapter = adapter
     }
 
-    private fun onItemClicked(scanResult: ScanResult) {
+    private fun onItemClicked(wasteScanned: WasteScanned) {
         val dialog = BottomSheetDialog(requireActivity())
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.setContentView(R.layout.fragment_recommended_article)
 
-        dialog.findViewById<TextView>(R.id.wasteType)?.text = scanResult.title
+        dialog.findViewById<TextView>(R.id.wasteType)?.text = wasteScanned.wasteType
 
         dialog.show()
         setDialogBehaviour(dialog)

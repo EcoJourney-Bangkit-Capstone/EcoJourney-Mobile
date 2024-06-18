@@ -11,7 +11,8 @@
         android:layout_height="match_parent"
         android:textSize="22sp"
         android:textColor="@color/black"
-        android:text="@string/waste_type" />
+        android:text="@string/waste_type"
+        android:textAllCaps="true"/>
 
     <TextView
         android:id="@+id/viewArticlesBtn"

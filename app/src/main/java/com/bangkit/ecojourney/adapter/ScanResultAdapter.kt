@@ -4,10 +4,11 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bangkit.ecojourney.data.ScanResult
+import com.bangkit.ecojourney.data.WasteScanned
 import com.bangkit.ecojourney.databinding.ScanResultListItemBinding
 
 class ScanResultAdapter(
-    private val data: List<ScanResult>,
+    private val data: List<WasteScanned>,
     private val onClickListener: (Int) -> Unit) : RecyclerView.Adapter<ScanResultAdapter.ScanResultViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ScanResultViewHolder {
@@ -17,7 +18,7 @@ class ScanResultAdapter(
 
     override fun onBindViewHolder(holder: ScanResultViewHolder, position: Int) {
         val scanResult = data[position]
-        holder.binding.wasteType.text = scanResult.title
+        holder.binding.wasteType.text = scanResult.wasteType
 
         // Set click listener on the ViewHolder's root view
         holder.binding.viewArticlesBtn.setOnClickListener {

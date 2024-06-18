@@ -35,6 +35,7 @@ android {
     }
     buildFeatures {
         viewBinding = true
+        mlModelBinding = true
     }
 }
 
@@ -54,6 +55,13 @@ dependencies {
     implementation(libs.androidx.fragment.ktx)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.legacy.support.v4)
+    implementation(libs.tensorflow.metadata)
+    implementation(libs.tensorflow.support)
+    implementation(libs.play.services.tflite.support)
+    implementation(libs.play.services.tflite.gpu)
+    implementation(libs.tensorflow.task.vision)
+    implementation(libs.tensorflow.lite.gpu.delegate)
+    implementation(libs.tensorflow.lite.gpu)
     implementation(libs.androidx.annotation)
     implementation(libs.datastore.preferences)
     testImplementation(libs.junit)
