@@ -21,6 +21,8 @@ playServicesTflGpu = "16.2.0"
 playServicesTflSup = "16.1.0"
 taskVision = "0.4.0"
 tfliteGpu = "2.9.0"
+annotation = "1.6.0"
+datastore = "1.1.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -47,6 +49,8 @@ play-services-tflite-gpu = {group = "com.google.android.gms", name = "play-servi
 tensorflow-task-vision = {group = "org.tensorflow", name= "tensorflow-lite-task-vision", version.ref = "taskVision"}
 tensorflow-lite-gpu-delegate = {group = "org.tensorflow", name = "tensorflow-lite-gpu-delegate-plugin", version.ref = "taskVision"}
 tensorflow-lite-gpu = {group = "org.tensorflow", name = "tensorflow-lite-gpu", version.ref = "tfliteGpu"}
+androidx-annotation = { group = "androidx.annotation", name = "annotation", version.ref = "annotation" }
+datastore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastore"}
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

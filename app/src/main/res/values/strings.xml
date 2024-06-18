@@ -1,19 +1,47 @@
 <resources>
     <string name="app_name">EcoJourney</string>
     <string name="title_home">Home</string>
-    <string name="title_dashboard">Dashboard</string>
-    <string name="title_notifications">Notifications</string>
+    <string name="title_articles">Articles</string>
+    <string name="title_history">History</string>
     <string name="scan_your_waste">Scan Your Waste!</string>
     <string name="scan_help">To get articles about your waste you need to take a picture</string>
-    <string name="scan">Scan</string>
+    <string name="scan">Scanner</string>
+    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="scan_result_image">Scan Result image</string>
     <string name="waste_type">Waste Type</string>
     <string name="view_articles"><![CDATA[View Articles >]]></string>
     <string name="scan_results">Scan Results</string>
     <string name="title_waste_scan">Waste Scan</string>
-
     <string name="tflitevision_is_not_initialized_yet">TfLiteVision is not initialized yet</string>
     <string name="image_classifier_failed">Image classifier failed to initialize. See error logs for details</string>
-
+    <string name="title_profile">Profile</string>
+    <string name="title_activity_login">LoginActivity</string>
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in">Sign in or register</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="welcome">"Welcome !"</string>
+    <string name="invalid_username">Not a valid username</string>
+    <string name="invalid_password">Password must be >5 characters</string>
+    <string name="login_failed">"Login failed"</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="signIn">Sign In</string>
+    <string name="logout">Logout</string>
+    <string name="sign_in_message">Sign in to your account</string>
+    <string name="remember_me">Remember me</string>
+    <string name="forgot_password">Forgot Password ?</string>
+    <string name="dont_have_account">Don\'t have an account?</string>
+    <string name="email_hint">Enter your email</string>
+    <string name="create_new_account">Create new account</string>
+    <string name="eco">Eco</string>
+    <string name="journey">Journey</string>
+    <string name="onBoardingMessageTitle">Make Impact</string>
+    <string name="onBoardingMessage">Sign up today and let\'s start the journey towards a healthy and sustainable environment.</string>
+    <string name="create_account">Create Account</string>
+    <string name="have_account">Have account?</string>
+    <string name="log_in">Log In</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="sign_up">Sign Up</string>
 </resources>

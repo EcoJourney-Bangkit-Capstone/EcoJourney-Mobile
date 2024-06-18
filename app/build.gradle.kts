@@ -62,6 +62,8 @@ dependencies {
     implementation(libs.tensorflow.task.vision)
     implementation(libs.tensorflow.lite.gpu.delegate)
     implementation(libs.tensorflow.lite.gpu)
+    implementation(libs.androidx.annotation)
+    implementation(libs.datastore.preferences)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
