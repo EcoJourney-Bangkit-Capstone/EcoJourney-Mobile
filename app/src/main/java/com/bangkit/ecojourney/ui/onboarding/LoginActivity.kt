@@ -8,6 +8,7 @@ import androidx.activity.viewModels
 import android.view.WindowInsets
 import android.view.WindowManager
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.bangkit.ecojourney.MainActivity
 import com.bangkit.ecojourney.databinding.ActivityLoginBinding
@@ -53,7 +54,14 @@ class LoginActivity : AppCompatActivity() {
                     startActivity(intent)
                     finish()
                 } else {
-                    Log.e(TAG, "Login gagal: ${response.message}")
+                    AlertDialog.Builder(this).apply {
+                        setTitle("Oops! Login failed!")
+                        setMessage(response.message)
+                        setPositiveButton("Back", null)
+                        create()
+                        show()
+                    }
+                    Log.e(TAG, "Login Failed: ${response.message}")
                 }
             }
         }
