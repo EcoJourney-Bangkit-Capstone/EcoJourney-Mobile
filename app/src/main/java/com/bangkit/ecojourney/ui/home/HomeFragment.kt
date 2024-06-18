@@ -1,13 +1,16 @@
 package com.bangkit.ecojourney.ui.home
 
+import android.animation.LayoutTransition
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import com.bangkit.ecojourney.R
 import com.bangkit.ecojourney.databinding.FragmentHomeBinding
 import com.bangkit.ecojourney.ui.ViewModelFactory
 import com.bangkit.ecojourney.ui.onboarding.LoginActivity
@@ -30,16 +33,18 @@ class HomeFragment : Fragment() {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        val textView: TextView = binding.textHome
-        homeViewModel.text.observe(viewLifecycleOwner) {
-            textView.text = it
-        }
-
         binding.logoutBtn.setOnClickListener {
             homeViewModel.logout()
             val intent = Intent(activity, LoginActivity::class.java)
             startActivity(intent)
             activity?.finish()
+        }
+
+        with (binding) {
+            setupFAQ(layoutFAQ1, cardFAQ1, answerFAQ1, btnFAQ1)
+            setupFAQ(layoutFAQ2, cardFAQ2, answerFAQ2, btnFAQ2)
+            setupFAQ(layoutFAQ3, cardFAQ3, answerFAQ3, btnFAQ3)
+            setupFAQ(layoutFAQ4, cardFAQ4, answerFAQ4, btnFAQ4)
         }
 
         return root
@@ -48,5 +53,19 @@ class HomeFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    private fun setupFAQ(layout: ViewGroup, card: View, answer: View, button: View) {
+        layout.layoutTransition.enableTransitionType(LayoutTransition.CHANGING)
+        card.setOnClickListener {
+            val isExpand = if (answer.visibility == View.GONE) View.VISIBLE else View.GONE
+            answer.visibility = isExpand
+
+            if (isExpand == View.VISIBLE) {
+                (button as? ImageView)?.setImageResource(R.drawable.ic_minimize)
+            } else {
+                (button as? ImageView)?.setImageResource(R.drawable.ic_expand)
+            }
+        }
     }
 }
