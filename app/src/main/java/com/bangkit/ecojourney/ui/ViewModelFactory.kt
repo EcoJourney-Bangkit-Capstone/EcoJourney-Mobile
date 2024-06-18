@@ -3,13 +3,16 @@ package com.bangkit.ecojourney.ui
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.bangkit.ecojourney.data.repository.ArticleRepository
 import com.bangkit.ecojourney.data.repository.UserRepository
 import com.bangkit.ecojourney.di.Injection
 import com.bangkit.ecojourney.ui.home.HomeViewModel
 import com.bangkit.ecojourney.ui.onboarding.OnBoardingViewModel
 import com.bangkit.ecojourney.ui.splashscreen.SplashScreenViewModel
+import com.bangkit.ecojourney.ui.wastescan.WasteScanViewModel
 
-class ViewModelFactory(private val userRepository: UserRepository
+class ViewModelFactory(private val userRepository: UserRepository,
+                        private val articleRepository: ArticleRepository
 ) : ViewModelProvider.NewInstanceFactory() {
 
     @Suppress("UNCHECKED_CAST")
@@ -23,6 +26,9 @@ class ViewModelFactory(private val userRepository: UserRepository
             }
             modelClass.isAssignableFrom(HomeViewModel::class.java) -> {
                 HomeViewModel(userRepository) as T
+            }
+            modelClass.isAssignableFrom(WasteScanViewModel::class.java) -> {
+                WasteScanViewModel(articleRepository) as T
             }
 
             else -> throw IllegalArgumentException("Unknown ViewModel class: " + modelClass.name)
@@ -38,7 +44,8 @@ class ViewModelFactory(private val userRepository: UserRepository
             if (INSTANCE == null) {
                 synchronized(ViewModelFactory::class.java) {
                     INSTANCE = ViewModelFactory(
-                        Injection.provideUserRepository(context)
+                        Injection.provideUserRepository(context),
+                        Injection.provideArticleRepository(context)
                     )
                 }
             }

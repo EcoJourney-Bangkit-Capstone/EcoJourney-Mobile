@@ -21,15 +21,19 @@ import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import java.nio.ByteBuffer
 import java.util.concurrent.Executors
 import com.bangkit.ecojourney.R
+import com.bangkit.ecojourney.adapter.ArticleRecommendAdapter
 import com.bangkit.ecojourney.adapter.ScanResultAdapter
 import com.bangkit.ecojourney.data.ScanResult
 import com.bangkit.ecojourney.data.WasteScanned
+import com.bangkit.ecojourney.data.response.ArticleItem
 import com.bangkit.ecojourney.databinding.FragmentWasteScanBinding
+import com.bangkit.ecojourney.ui.ViewModelFactory
 import com.bangkit.ecojourney.utils.ObjectDetectorHelper
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -41,7 +45,11 @@ import java.util.Locale
 import java.util.concurrent.ExecutorService
 
 class WasteScanFragment : Fragment(), ObjectDetectorHelper.DetectorListener {
+    private val viewModel: WasteScanViewModel by viewModels<WasteScanViewModel> {
+        ViewModelFactory.getInstance(requireContext())
+    }
     private lateinit var binding: FragmentWasteScanBinding
+
     private lateinit var objectDetectorHelper: ObjectDetectorHelper
     private lateinit var bitmapBuffer: Bitmap
     private var preview: Preview? = null
@@ -269,10 +277,9 @@ class WasteScanFragment : Fragment(), ObjectDetectorHelper.DetectorListener {
     }
 
     private fun showBottomSheet(scanResult: ScanResult) {
-        val dialog = BottomSheetDialog(requireActivity())
+        val dialog = BottomSheetDialog(requireActivity(), R.style.AppBottomSheetDialogTheme)
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.setContentView(R.layout.fragment_scan_result)
-        dialog.findViewById<ImageView>(R.id.scanImage)?.setImageBitmap(scanResult.image)
 
         dialog.show()
         setDialogBehaviour(dialog)
@@ -287,7 +294,7 @@ class WasteScanFragment : Fragment(), ObjectDetectorHelper.DetectorListener {
     }
 
     private fun onItemClicked(wasteScanned: WasteScanned) {
-        val dialog = BottomSheetDialog(requireActivity())
+        val dialog = BottomSheetDialog(requireActivity(), R.style.AppBottomSheetDialogTheme)
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.setContentView(R.layout.fragment_recommended_article)
 
@@ -296,7 +303,18 @@ class WasteScanFragment : Fragment(), ObjectDetectorHelper.DetectorListener {
         dialog.show()
         setDialogBehaviour(dialog)
 
+        viewModel.getArticles()
+        viewModel.articles.observe(viewLifecycleOwner) { articles ->
+            val recyclerView = dialog.findViewById<RecyclerView>(R.id.rvRecommendedArticles)
+            recyclerView?.layoutManager = LinearLayoutManager(requireActivity())
+            val adapter = ArticleRecommendAdapter(articles) { position ->
+                val article = articles[position]
+            }
+            recyclerView?.adapter = adapter
+        }
     }
+
+
 
     private fun setDialogBehaviour(dialog: BottomSheetDialog) {
         dialog.behavior.apply {

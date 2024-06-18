@@ -26,8 +26,8 @@
             android:layout_height="wrap_content"
             android:text="Results For"
             android:textColor="@color/black"
-            android:textStyle="bold"
-            android:textSize="22sp"
+            android:fontFamily="@font/inter_semi_bold"
+            android:textSize="20sp"
             android:layout_marginHorizontal="4dp"
             android:gravity="center"/>
 
@@ -37,8 +37,8 @@
             android:layout_height="wrap_content"
             android:text="@string/waste_type"
             android:textColor="@color/black"
-            android:textStyle="bold"
-            android:textSize="22sp"
+            android:fontFamily="@font/inter_semi_bold"
+            android:textSize="20sp"
             android:layout_marginHorizontal="4dp"
             android:gravity="center"/>
 
@@ -55,9 +55,11 @@
             android:orientation="vertical">
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rvScanResults"
+                android:id="@+id/rvRecommendedArticles"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"
+                android:layout_marginBottom="40dp"
+                tools:listitem="@layout/article_recommendation_list_item"/>
 
 
         </LinearLayout>
