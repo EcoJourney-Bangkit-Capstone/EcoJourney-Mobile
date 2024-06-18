@@ -5,15 +5,17 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bangkit.ecojourney.data.repository.UserRepository
+import com.bangkit.ecojourney.data.response.LoginResponse
+import com.bangkit.ecojourney.data.response.RegisterResponse
 import kotlinx.coroutines.launch
 
 class OnBoardingViewModel(private val userRepository: UserRepository) : ViewModel() {
 
-    private val _loginResponse = MutableLiveData<String>()
-    val loginResponse: LiveData<String> = _loginResponse
+    private val _loginResponse = MutableLiveData<LoginResponse>()
+    val loginResponse: LiveData<LoginResponse> = _loginResponse
 
-    private val _registerResponse = MutableLiveData<String>()
-    val registerResponse: LiveData<String> = _registerResponse
+    private val _registerResponse = MutableLiveData<RegisterResponse>()
+    val registerResponse: LiveData<RegisterResponse> = _registerResponse
 
     fun login(email: String, password: String) {
         viewModelScope.launch {
@@ -22,9 +24,9 @@ class OnBoardingViewModel(private val userRepository: UserRepository) : ViewMode
         }
     }
 
-    fun register(name: String, email: String, password: String, confirmPassword: String) {
+    fun register(name: String, email: String, password: String) {
         viewModelScope.launch {
-            val response = userRepository.register(name, email, password, confirmPassword)
+            val response = userRepository.register(name, email, password)
             _registerResponse.value = response
         }
     }

@@ -3,9 +3,11 @@ package com.bangkit.ecojourney.ui.onboarding
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.viewModels
 import android.view.WindowInsets
 import android.view.WindowManager
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.bangkit.ecojourney.MainActivity
 import com.bangkit.ecojourney.databinding.ActivityLoginBinding
@@ -45,10 +47,14 @@ class LoginActivity : AppCompatActivity() {
 
             viewModel.login(email, password)
 
-            viewModel.loginResponse.observe(this) {
-                val intent = Intent(this, MainActivity::class.java)
-                startActivity(intent)
-                finish()
+            viewModel.loginResponse.observe(this) {response ->
+                if (!response.error){
+                    val intent = Intent(this, MainActivity::class.java)
+                    startActivity(intent)
+                    finish()
+                } else {
+                    Log.e(TAG, "Login gagal: ${response.message}")
+                }
             }
         }
 
@@ -57,5 +63,9 @@ class LoginActivity : AppCompatActivity() {
             startActivity(intent)
             finish()
         }
+    }
+
+    companion object {
+        private const val TAG = "LoginActivity"
     }
 }
