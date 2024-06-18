@@ -42,4 +42,26 @@
     <string name="log_in">Log In</string>
     <string name="confirm_password">Confirm Password</string>
     <string name="sign_up">Sign Up</string>
+    <string name="home_date">Monday, 20 Jan</string>
+    <string name="home_banner">Home Banner</string>
+    <string name="ecojourney_icon">EcoJourney Icon</string>
+    <string name="impactful_features">Impactful Features</string>
+    <string name="home_features_desc">Choose what you want to do today</string>
+    <string name="home_features_title">Impactful Features</string>
+    <string name="home_faq_title">Frequently Asked Question</string>
+
+    <!--  FAQ  -->
+    <string name="faq_question_1">What is EcoJourney?</string>
+    <string name="faq_answer_1">EcoJourney is an app that promotes environmental awareness and sustainable living.</string>
+    <string name="faq_question_2">How do I use the waste recognition feature?</string>
+    <string name="faq_answer_2">Simply scan the waste item with your phone\'s camera and the app will classify it.</string>
+    <string name="faq_question_3">Can I receive personalized content recommendations?</string>
+    <string name="faq_answer_3">Yes, the app provides articles and news based on your waste classification and preferences.</string>
+    <string name="faq_question_4">Is my data secure with EcoJourney?</string>
+    <string name="faq_answer_4">Yes, EcoJourney ensures user data is encrypted and stored securely.</string>
+    <string name="home_faq_desc">Quick answers to common questions for easy solutions</string>
+    <string name="home_logout_button">Logout Button</string>
+    <string name="home_feature_desc1">Waste Detection \nand Classification</string>
+    <string name="home_feature_desc2">Article and News \nRecommendation</string>
+
 </resources>

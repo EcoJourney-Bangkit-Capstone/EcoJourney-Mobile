@@ -18,6 +18,4 @@ class HomeViewModel(private val userRepository: UserRepository) : ViewModel() {
             userRepository.logout()
         }
     }
-
-    val text: LiveData<String> = _text
 }
