@@ -8,6 +8,7 @@ import com.bangkit.ecojourney.data.repository.Repository
 import com.bangkit.ecojourney.data.repository.ScanRepository
 import com.bangkit.ecojourney.data.repository.UserRepository
 import com.bangkit.ecojourney.di.Injection
+import com.bangkit.ecojourney.ui.history.HistoryViewModel
 import com.bangkit.ecojourney.ui.article.ArticleViewModel
 import com.bangkit.ecojourney.ui.home.HomeViewModel
 import com.bangkit.ecojourney.ui.onboarding.OnBoardingViewModel
@@ -29,6 +30,9 @@ class ViewModelFactory(private val userRepository: UserRepository,
             }
             modelClass.isAssignableFrom(HomeViewModel::class.java) -> {
                 HomeViewModel(userRepository) as T
+            }
+            modelClass.isAssignableFrom(HistoryViewModel::class.java) -> {
+                HistoryViewModel() as T
             }
             modelClass.isAssignableFrom(ArticleViewModel::class.java) -> {
                 ArticleViewModel(articleRepository) as T
