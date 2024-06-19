@@ -65,5 +65,6 @@
     <string name="home_logout_button">Logout Button</string>
     <string name="home_feature_desc1">Waste Detection \nand Classification</string>
     <string name="home_feature_desc2">Article and News \nRecommendation</string>
+    <string name="eco_news_title">Eco News</string>
 
 </resources>

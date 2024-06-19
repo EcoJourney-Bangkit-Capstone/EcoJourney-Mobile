@@ -13,9 +13,9 @@
 
     <fragment
         android:id="@+id/navigation_articles"
-        android:name="com.bangkit.ecojourney.ui.dashboard.DashboardFragment"
+        android:name="com.bangkit.ecojourney.ui.article.ArticleFragment"
         android:label="@string/title_articles"
-        tools:layout="@layout/fragment_dashboard" />
+        tools:layout="@layout/fragment_article" />
 
     <fragment
         android:id="@+id/navigation_scan"
