@@ -47,10 +47,8 @@ class MainActivity : AppCompatActivity() {
         }
 
         val navView: BottomNavigationView = binding.navView
-
         val navController = findNavController(R.id.nav_host_fragment_activity_main)
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
+
         val appBarConfiguration = AppBarConfiguration(
             setOf(
                 R.id.navigation_home,
@@ -64,8 +62,11 @@ class MainActivity : AppCompatActivity() {
 
         binding.fab.setOnClickListener {
             navController.navigate(R.id.navigation_scan)
-        }
+            navView.menu.findItem(R.id.navigation_scan).isChecked = true
+            navController.popBackStack()
+            navView.selectedItemId = R.id.navigation_scan
 
+        }
     }
 
     companion object {

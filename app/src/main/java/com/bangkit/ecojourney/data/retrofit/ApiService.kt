@@ -1,12 +1,15 @@
 package com.bangkit.ecojourney.data.retrofit
 
+import com.bangkit.ecojourney.data.response.ArticleResponse
 import com.bangkit.ecojourney.data.response.LoginResponse
 import com.bangkit.ecojourney.data.response.LogoutResponse
 import com.bangkit.ecojourney.data.response.RegisterResponse
 import retrofit2.http.Body
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
+import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.Path
 
 interface ApiService {
     @POST("api/auth/register")
@@ -23,4 +26,10 @@ interface ApiService {
     suspend fun logout(
         @Body requestBody: Map<String, String>
     ): LogoutResponse
+
+    @GET("api/article/")
+    suspend fun getArticle(
+
+    ): ArticleResponse
+
 }
