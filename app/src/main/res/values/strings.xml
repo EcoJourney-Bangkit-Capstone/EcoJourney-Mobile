@@ -67,5 +67,7 @@
     <string name="home_feature_desc2">Article and News \nRecommendation</string>
     <string name="eco_news_title">Eco News</string>
     <string name="latest_article_title">Latest Article</string>
+    <string name="failed_retrieve_msg">Failed to retrieve the data</string>
+    <string name="retry">Retry</string>
 
 </resources>

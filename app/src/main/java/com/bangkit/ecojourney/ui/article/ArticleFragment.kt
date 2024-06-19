@@ -9,17 +9,26 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
 import androidx.core.view.get
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.CompositePageTransformer
 import androidx.viewpager2.widget.MarginPageTransformer
 import androidx.viewpager2.widget.ViewPager2
 import com.bangkit.ecojourney.R
+import com.bangkit.ecojourney.adapter.ArticleAdapter
 import com.bangkit.ecojourney.adapter.ImageAdapter
+import com.bangkit.ecojourney.data.response.ArticleResponse
 import com.bangkit.ecojourney.databinding.FragmentArticleBinding
+import com.bangkit.ecojourney.ui.ViewModelFactory
+import com.bangkit.ecojourney.ui.onboarding.OnBoardingViewModel
 import com.google.android.material.tabs.TabLayoutMediator
 import kotlin.math.abs
 
@@ -27,6 +36,10 @@ class ArticleFragment : Fragment() {
 
     private var _binding: FragmentArticleBinding? = null
     private val binding get() = _binding!!
+
+    private val viewModel by viewModels<ArticleViewModel> {
+        ViewModelFactory.getInstance(requireContext(), "article")
+    }
 
     private lateinit var viewPager2: ViewPager2
     private lateinit var handler: Handler
@@ -39,7 +52,6 @@ class ArticleFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val articleViewModel = ViewModelProvider(this).get(ArticleViewModel::class.java)
 
         _binding = FragmentArticleBinding.inflate(inflater, container, false)
         val root: View = binding.root
@@ -54,16 +66,69 @@ class ArticleFragment : Fragment() {
         setUpTransformer()
         setupIndicators()
         setCurrentIndicators(0)
+        setupRecyclerView()
 
         viewPager2.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
-                Log.d(TAG, "list size: ${imageList.size}")
                 super.onPageSelected(position)
                 handler.removeCallbacks(runnable)
                 handler.postDelayed(runnable, 2000)
                 setCurrentIndicators(position % carouselLength)
             }
         })
+    }
+
+    private fun setupRecyclerView() {
+        val layoutManager = LinearLayoutManager(requireContext())
+        val itemDecoration = DividerItemDecoration(requireContext(), layoutManager.orientation)
+
+        binding.rvArticle.layoutManager = layoutManager
+
+        setErrorView(false)
+        viewModel.getAllArticles()
+        viewModel.articles.observe(viewLifecycleOwner) {
+                articles -> setArticleList(articles)
+            if (articles.details?.articles?.isEmpty() == true) {
+                setErrorView(true)
+            } else {
+                setErrorView(false)
+            }
+        }
+
+        viewModel.isLoading.observe(viewLifecycleOwner) {
+                isLoading -> showLoading(isLoading)
+        }
+
+        viewModel.errorToast.observe(viewLifecycleOwner) {
+            errorToast -> errorToast?.let {
+                if (errorToast) {
+                    Toast.makeText(requireContext(), "Success to retrieve the data", Toast.LENGTH_SHORT).show()
+                    viewModel.resetToast()
+                } else {
+                    Toast.makeText(requireContext(), "Failed to retrieve the data", Toast.LENGTH_SHORT).show()
+                    viewModel.resetToast()
+                    setErrorView(true)
+                }
+            }
+        }
+    }
+
+    private fun setArticleList(articles: ArticleResponse) {
+        val adapter = ArticleAdapter()
+        adapter.submitList(articles.details?.articles)
+        binding.rvArticle.adapter = adapter
+    }
+
+    private fun showLoading(isLoading: Boolean) {
+        binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
+    }
+
+    private fun setErrorView(isError: Boolean) {
+        val isShow = if (isError) View.VISIBLE else View.GONE
+        binding.ivError.visibility = isShow
+        binding.tvError.visibility = isShow
+        binding.btnRetry.visibility = isShow
+        binding.rvArticle.visibility = if (isError) View.GONE else View.VISIBLE
     }
 
     override fun onPause() {

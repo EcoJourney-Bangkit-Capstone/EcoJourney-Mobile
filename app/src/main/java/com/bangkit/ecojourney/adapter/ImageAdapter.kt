@@ -17,7 +17,6 @@ class ImageAdapter(private val imageList: ArrayList<Int>, private val viewPager2
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageViewHolder {
-        Log.d(TAG, "onCreateViewHolder: ")
         val view =
             LayoutInflater.from(parent.context).inflate(R.layout.carousel_image_container, parent, false)
         return ImageViewHolder(view)
@@ -25,7 +24,6 @@ class ImageAdapter(private val imageList: ArrayList<Int>, private val viewPager2
 
     override fun onBindViewHolder(holder: ImageViewHolder, position: Int) {
         holder.imageView.setImageResource(imageList[position])
-        Log.d(TAG, "onBindViewHolder: $position")
         if (position == imageList.size-1){
             viewPager2.post(runnable)
         }

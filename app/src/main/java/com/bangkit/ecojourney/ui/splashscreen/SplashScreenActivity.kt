@@ -15,7 +15,7 @@ import com.bangkit.ecojourney.ui.onboarding.OnBoardingActivity
 
 class SplashScreenActivity : AppCompatActivity() {
     private val viewModel by viewModels<SplashScreenViewModel> {
-        ViewModelFactory.getInstance(this)
+        ViewModelFactory.getInstance(this, "user")
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

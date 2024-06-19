@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.first
 class UserRepository private constructor(
     private val userPreference: UserPreference,
     private val apiService: ApiService
-) {
+): Repository {
 
     suspend fun saveSession(user: UserModel) {
         userPreference.saveSession(user)
