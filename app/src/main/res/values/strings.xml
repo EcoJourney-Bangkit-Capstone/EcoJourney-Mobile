@@ -65,5 +65,9 @@
     <string name="home_logout_button">Logout Button</string>
     <string name="home_feature_desc1">Waste Detection \nand Classification</string>
     <string name="home_feature_desc2">Article and News \nRecommendation</string>
+    <string name="scan_history">Scan History</string>
+    <string name="scan_date">Scan Date</string>
+    <string name="waste_count">1</string>
+    <string name="waste_scanned">Waste scanned</string>
 
 </resources>

@@ -25,7 +25,7 @@
 
     <fragment
         android:id="@+id/navigation_history"
-        android:name="com.bangkit.ecojourney.ui.notifications.NotificationsFragment"
+        android:name="com.bangkit.ecojourney.ui.history.HistoryFragment"
         android:label="@string/title_history"
-        tools:layout="@layout/fragment_notifications" />
+        tools:layout="@layout/fragment_history" />
 </navigation>

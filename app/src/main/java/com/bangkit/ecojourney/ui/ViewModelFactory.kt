@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.bangkit.ecojourney.data.repository.UserRepository
 import com.bangkit.ecojourney.di.Injection
+import com.bangkit.ecojourney.ui.history.HistoryViewModel
 import com.bangkit.ecojourney.ui.home.HomeViewModel
 import com.bangkit.ecojourney.ui.onboarding.OnBoardingViewModel
 import com.bangkit.ecojourney.ui.splashscreen.SplashScreenViewModel
@@ -23,6 +24,9 @@ class ViewModelFactory(private val userRepository: UserRepository
             }
             modelClass.isAssignableFrom(HomeViewModel::class.java) -> {
                 HomeViewModel(userRepository) as T
+            }
+            modelClass.isAssignableFrom(HistoryViewModel::class.java) -> {
+                HistoryViewModel() as T
             }
 
             else -> throw IllegalArgumentException("Unknown ViewModel class: " + modelClass.name)
