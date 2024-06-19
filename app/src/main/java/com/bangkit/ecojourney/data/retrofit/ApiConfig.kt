@@ -6,7 +6,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 object ApiConfig {
-    private const val BASE_URL = "https://private-2cc169-ecojourney.apiary-mock.com"
+    private const val BASE_URL = "https://ecojourney-backend-7iuvvfb2cq-et.a.run.app//"
 
     fun getApiService(): ApiService {
         val loggingInterceptor =
