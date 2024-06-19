@@ -14,7 +14,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
-import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.camera.core.*
@@ -31,7 +30,6 @@ import com.bangkit.ecojourney.adapter.ArticleRecommendAdapter
 import com.bangkit.ecojourney.adapter.ScanResultAdapter
 import com.bangkit.ecojourney.data.ScanResult
 import com.bangkit.ecojourney.data.WasteScanned
-import com.bangkit.ecojourney.data.response.ArticleItem
 import com.bangkit.ecojourney.databinding.FragmentWasteScanBinding
 import com.bangkit.ecojourney.ui.ViewModelFactory
 import com.bangkit.ecojourney.utils.ObjectDetectorHelper
@@ -281,9 +279,6 @@ class WasteScanFragment : Fragment(), ObjectDetectorHelper.DetectorListener {
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.setContentView(R.layout.fragment_scan_result)
 
-        dialog.show()
-        setDialogBehaviour(dialog)
-
         val recyclerView = dialog.findViewById<RecyclerView>(R.id.rvScanResults)
         recyclerView?.layoutManager = LinearLayoutManager(requireActivity())
         val adapter = ScanResultAdapter(scanResult.wasteScanned) { position ->
@@ -291,6 +286,9 @@ class WasteScanFragment : Fragment(), ObjectDetectorHelper.DetectorListener {
             onItemClicked(wasteScanned)
         }
         recyclerView?.adapter = adapter
+
+        setDialogBehaviour(dialog)
+        dialog.show()
     }
 
     private fun onItemClicked(wasteScanned: WasteScanned) {
@@ -299,9 +297,6 @@ class WasteScanFragment : Fragment(), ObjectDetectorHelper.DetectorListener {
         dialog.setContentView(R.layout.fragment_recommended_article)
 
         dialog.findViewById<TextView>(R.id.wasteType)?.text = wasteScanned.wasteType
-
-        dialog.show()
-        setDialogBehaviour(dialog)
 
         viewModel.getArticles()
         viewModel.articles.observe(viewLifecycleOwner) { articles ->
@@ -312,9 +307,10 @@ class WasteScanFragment : Fragment(), ObjectDetectorHelper.DetectorListener {
             }
             recyclerView?.adapter = adapter
         }
+
+        setDialogBehaviour(dialog)
+        dialog.show()
     }
-
-
 
     private fun setDialogBehaviour(dialog: BottomSheetDialog) {
         dialog.behavior.apply {

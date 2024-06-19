@@ -4,11 +4,8 @@ import com.google.gson.annotations.SerializedName
 
 data class ArticleResponse(
 
-	@field:SerializedName("data")
-	val listArticle: List<ArticleItem>,
-
-	@field:SerializedName("total_count")
-	val totalCount: Int,
+	@field:SerializedName("details")
+	val details: Details?,
 
 	@field:SerializedName("error")
 	val error: Boolean,
@@ -17,7 +14,7 @@ data class ArticleResponse(
 	val message: String
 )
 
-data class ArticleItem(
+data class ArticlesItem(
 
 	@field:SerializedName("date_published")
 	val datePublished: String,
@@ -29,7 +26,7 @@ data class ArticleItem(
 	val publisher: String,
 
 	@field:SerializedName("topic")
-	val topic: String,
+	val topic: Any,
 
 	@field:SerializedName("id")
 	val id: Int,
@@ -39,4 +36,13 @@ data class ArticleItem(
 
 	@field:SerializedName("content")
 	val content: String
+)
+
+data class Details(
+
+	@field:SerializedName("articles")
+	val articles: List<ArticlesItem>,
+
+	@field:SerializedName("Total_count")
+	val totalCount: Int
 )
