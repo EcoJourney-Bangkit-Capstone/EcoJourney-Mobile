@@ -168,5 +168,9 @@
     <string name="publish_date_placeholder">10 Juni 2024</string>
     <string name="article_title">Article Title</string>
     <string name="read_article">Read Article</string>
+    <string name="password_hint">Enter your password</string>
+    <string name="name_hint">Enter your name</string>
+    <string name="confirm_password_hint">Enter your password again</string>
+    <string name="sign_in">Sign In</string>
 
 </resources>

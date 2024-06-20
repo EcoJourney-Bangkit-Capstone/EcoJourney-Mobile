@@ -69,12 +69,18 @@ class HistoryFragment : Fragment() {
 
         viewModel.getHistory()
         viewModel.history.observe(viewLifecycleOwner) { history ->
-            binding.rvScanHistory.layoutManager = LinearLayoutManager(requireActivity())
-            val adapter = HistoryAdapter(history) { position ->
-                val scanResult = history[position]
-                onItemClicked(scanResult)
+            if (history != null && history.isNotEmpty()) {
+                binding.rvScanHistory.layoutManager = LinearLayoutManager(requireActivity())
+                val adapter = HistoryAdapter(history) { position ->
+                    val scanResult = history[position]
+                    onItemClicked(scanResult)
+                }
+                binding.rvScanHistory.adapter = adapter
+            } else {
+                // Handle case where history is null or empty
+                Log.e(TAG, "History is null or empty")
+                Toast.makeText(requireContext(), "No history available", Toast.LENGTH_SHORT).show()
             }
-            binding.rvScanHistory.adapter = adapter
         }
     }
 

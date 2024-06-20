@@ -254,23 +254,29 @@ class WasteScanFragment : Fragment(), ObjectDetectorHelper.DetectorListener {
                 val bitmap = imageToBitmap(image)
                 val setOfWasteType = HashSet<String>()
 
-                for (detection in wasteTypeScanned!!) {
-                    for (category in detection.categories) {
-                        setOfWasteType.add(category.label)
+                wasteTypeScanned?.let { detections ->
+                    for (detection in detections) {
+                        for (category in detection.categories) {
+                            setOfWasteType.add(category.label)
+                        }
                     }
+
+                    val listOfWasteScanned = setOfWasteType.map { it }
+
+                    if (listOfWasteScanned.isNotEmpty()) {
+                        val imageFile = bitmapToFile(bitmap)
+                        viewModel.postScan(imageFile, listOfWasteScanned)
+                        viewModel.scanResponse.observe(viewLifecycleOwner) { scanResponse ->
+                            Log.d("SCAN RESPONSE", scanResponse.toString())
+                        }
+                    }
+
+                    showBottomSheet(listOfWasteScanned)
+                } ?: run {
+                    Log.e(TAG, "wasteTypeScanned is null")
+                    Toast.makeText(requireContext(), "No waste type detected", Toast.LENGTH_SHORT).show()
                 }
 
-                val listOfWasteScanned = setOfWasteType.map { it }
-
-                if (listOfWasteScanned.isNotEmpty()) {
-                    val image = bitmapToFile(bitmap)
-                    viewModel.postScan(image, listOfWasteScanned)
-                    viewModel.scanResponse.observe(viewLifecycleOwner) { scanResponse ->
-                        Log.d("SCAN RESPONSE", scanResponse.toString())
-                    }
-                }
-
-                showBottomSheet(listOfWasteScanned)
                 image.close()
             }
 
@@ -284,6 +290,7 @@ class WasteScanFragment : Fragment(), ObjectDetectorHelper.DetectorListener {
             }
         })
     }
+
 
     private fun bitmapToFile(bitmap: Bitmap): File {
         val wrapper = ContextWrapper(requireContext())
