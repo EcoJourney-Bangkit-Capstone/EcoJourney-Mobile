@@ -29,31 +29,13 @@ class ArticleViewModel(private val articleRepository: ArticleRepository) : ViewM
     fun getAllArticles() {
         viewModelScope.launch {
             _isLoading.value = true
-            val client = articleRepository.getAllArticles()
-            client.enqueue(object : Callback<ArticleResponse> {
-                override fun onResponse(
-                    call: Call<ArticleResponse>,
-                    response: Response<ArticleResponse>
-                ) {
-                    _isLoading.value = false
-                    if (response.isSuccessful) {
-                        _articles.value = response.body()
-                        if (BuildConfig.DEBUG) Log.d(TAG, "onResponse: ${response.body()}")
-                        _errorToast.value = true
-                    } else {
-                        if (BuildConfig.DEBUG) Log.d(TAG, "onFailResponse: ${response.message()}")
-                    }
-                }
-
-                override fun onFailure(call: Call<ArticleResponse>, t: Throwable) {
-                    if (BuildConfig.DEBUG) Log.d(TAG, "onFailure: ${t.message}")
-                    _isLoading.value = false
-                    _errorToast.value = false
-                }
-            })
+            val response = articleRepository.getAllArticles()
+            if (response.details != null) {
+                _articles.value = response
+                _isLoading.value = false
+            }
         }
     }
-
 
     fun resetToast() {
         _errorToast.value = null
