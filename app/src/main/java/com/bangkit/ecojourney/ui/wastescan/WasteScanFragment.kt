@@ -1,12 +1,18 @@
 package com.bangkit.ecojourney.ui.wastescan
 
 import android.annotation.SuppressLint
+import android.content.ContentResolver
+import android.content.Context
+import android.content.ContextWrapper
 import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.graphics.Matrix
+import android.graphics.SurfaceTexture
 import android.graphics.drawable.ColorDrawable
+import android.media.Image
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.Gravity
@@ -16,6 +22,8 @@ import android.view.ViewGroup
 import android.view.Window
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
@@ -28,19 +36,20 @@ import java.util.concurrent.Executors
 import com.bangkit.ecojourney.R
 import com.bangkit.ecojourney.adapter.ArticleRecommendAdapter
 import com.bangkit.ecojourney.adapter.ScanResultAdapter
-import com.bangkit.ecojourney.data.ScanResult
-import com.bangkit.ecojourney.data.WasteScanned
 import com.bangkit.ecojourney.databinding.FragmentWasteScanBinding
 import com.bangkit.ecojourney.ui.ViewModelFactory
 import com.bangkit.ecojourney.utils.ObjectDetectorHelper
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import org.tensorflow.lite.task.vision.detector.Detection
-import java.text.SimpleDateFormat
-import java.util.Date
+import java.io.File
+import java.io.FileOutputStream
+import java.io.OutputStream
 import java.util.LinkedList
-import java.util.Locale
+import java.util.UUID
 import java.util.concurrent.ExecutorService
+import androidx.camera.core.ImageProxy
+import androidx.camera.core.ImageProxy.PlaneProxy
 
 class WasteScanFragment : Fragment(), ObjectDetectorHelper.DetectorListener {
     private val viewModel: WasteScanViewModel by viewModels<WasteScanViewModel> {
@@ -59,6 +68,10 @@ class WasteScanFragment : Fragment(), ObjectDetectorHelper.DetectorListener {
 
     var wasteTypeScanned: MutableList<Detection>? = null
 
+    private var currentImageUri: Uri? = null
+    private lateinit var surfaceTexture: SurfaceTexture
+    private lateinit var imageProxy: ImageProxy
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -68,6 +81,8 @@ class WasteScanFragment : Fragment(), ObjectDetectorHelper.DetectorListener {
         val root: View = binding.root
 
         binding.captureImage.setOnClickListener { takePhoto() }
+
+        binding.galleryImage.setOnClickListener { startGallery() }
 
         return root
     }
@@ -83,6 +98,11 @@ class WasteScanFragment : Fragment(), ObjectDetectorHelper.DetectorListener {
         binding.viewFinder.post {
             setUpCamera()
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        initializeObjectDetector()
     }
 
     private fun initializeObjectDetector() {
@@ -223,8 +243,6 @@ class WasteScanFragment : Fragment(), ObjectDetectorHelper.DetectorListener {
         imageCapture.takePicture(ContextCompat.getMainExecutor(requireActivity()), object : ImageCapture.OnImageCapturedCallback() {
             override fun onCaptureSuccess(image: ImageProxy) {
                 val bitmap = imageToBitmap(image)
-                val dateTime = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(Date())
-
                 val setOfWasteType = HashSet<String>()
 
                 for (detection in wasteTypeScanned!!) {
@@ -233,11 +251,17 @@ class WasteScanFragment : Fragment(), ObjectDetectorHelper.DetectorListener {
                     }
                 }
 
-                val listOfWasteScanned = setOfWasteType.map { WasteScanned(it) }
+                val listOfWasteScanned = setOfWasteType.map { it }
 
-                val wasteScanResult = ScanResult(listOfWasteScanned, dateTime, bitmap)
+                if (listOfWasteScanned.isNotEmpty()) {
+                    val image = bitmapToFile(bitmap)
+                    viewModel.postScan(image, listOfWasteScanned)
+                    viewModel.scanResponse.observe(viewLifecycleOwner) { scanResponse ->
+                        Log.d("SCAN RESPONSE", scanResponse.toString())
+                    }
+                }
 
-                showBottomSheet(wasteScanResult)
+                showBottomSheet(listOfWasteScanned)
                 image.close()
             }
 
@@ -250,6 +274,17 @@ class WasteScanFragment : Fragment(), ObjectDetectorHelper.DetectorListener {
                 Log.e(TAG, "Photo capture failed: ${exception.message}", exception)
             }
         })
+    }
+
+    private fun bitmapToFile(bitmap: Bitmap): File {
+        val wrapper = ContextWrapper(requireContext())
+        var file = wrapper.getDir("Images", Context.MODE_PRIVATE)
+        file = File(file,"${UUID.randomUUID()}..jpg")
+        val stream: OutputStream = FileOutputStream(file)
+        bitmap.compress(Bitmap.CompressFormat.JPEG,25,stream)
+        stream.flush()
+        stream.close()
+        return file
     }
 
     private fun imageToBitmap(image: ImageProxy): Bitmap {
@@ -274,15 +309,15 @@ class WasteScanFragment : Fragment(), ObjectDetectorHelper.DetectorListener {
         return Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
     }
 
-    private fun showBottomSheet(scanResult: ScanResult) {
+    private fun showBottomSheet(listOfWasteScanned: List<String>) {
         val dialog = BottomSheetDialog(requireActivity(), R.style.AppBottomSheetDialogTheme)
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.setContentView(R.layout.fragment_scan_result)
 
         val recyclerView = dialog.findViewById<RecyclerView>(R.id.rvScanResults)
         recyclerView?.layoutManager = LinearLayoutManager(requireActivity())
-        val adapter = ScanResultAdapter(scanResult.wasteScanned) { position ->
-            val wasteScanned = scanResult.wasteScanned[position]
+        val adapter = ScanResultAdapter(listOfWasteScanned) { position ->
+            val wasteScanned = listOfWasteScanned[position]
             onItemClicked(wasteScanned)
         }
         recyclerView?.adapter = adapter
@@ -291,12 +326,12 @@ class WasteScanFragment : Fragment(), ObjectDetectorHelper.DetectorListener {
         dialog.show()
     }
 
-    private fun onItemClicked(wasteScanned: WasteScanned) {
+    private fun onItemClicked(wasteScanned: String) {
         val dialog = BottomSheetDialog(requireActivity(), R.style.AppBottomSheetDialogTheme)
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.setContentView(R.layout.fragment_recommended_article)
 
-        dialog.findViewById<TextView>(R.id.wasteType)?.text = wasteScanned.wasteType
+        dialog.findViewById<TextView>(R.id.wasteType)?.text = wasteScanned
 
         viewModel.getArticles()
         viewModel.articles.observe(viewLifecycleOwner) { articles ->
@@ -330,6 +365,33 @@ class WasteScanFragment : Fragment(), ObjectDetectorHelper.DetectorListener {
         super.onDestroy()
         cameraExecutor.shutdown()
     }
+
+    private fun startGallery() {
+        launcherGallery.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+    }
+
+    private val launcherGallery = registerForActivityResult(
+        ActivityResultContracts.PickVisualMedia()
+    ) { uri: Uri? ->
+        if (uri != null) {
+            currentImageUri = uri
+            classifyImage()
+        } else {
+            Log.d("Photo Picker", "No media selected")
+        }
+    }
+
+    private fun classifyImage() {
+        currentImageUri?.let {
+            Toast.makeText(requireContext(), "This Feature is not available yet", Toast.LENGTH_SHORT).show()
+        }
+
+        currentImageUri?.let {
+            Log.d("Image URI", "showImage: $it")
+
+        }
+    }
+
 
     companion object {
         private const val TAG = "CameraActivity"
