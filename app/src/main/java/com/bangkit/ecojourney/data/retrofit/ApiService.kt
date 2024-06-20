@@ -36,7 +36,9 @@ interface ApiService {
     ): LogoutResponse
 
     @GET("api/articles")
-    fun getAllArticles(): Call<ArticleResponse>
+    fun getAllArticles(
+        @Header("Authorization") token: String
+    ): Call<ArticleResponse>
 
     @POST("api/articles/search")
     suspend fun searchArticle(
