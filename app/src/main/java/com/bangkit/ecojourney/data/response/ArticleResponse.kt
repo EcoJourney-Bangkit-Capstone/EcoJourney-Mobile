@@ -5,44 +5,44 @@ import com.google.gson.annotations.SerializedName
 data class ArticleResponse(
 
 	@field:SerializedName("details")
-	val details: Details? = null,
+	val details: Details?,
 
 	@field:SerializedName("error")
-	val error: Boolean? = null,
+	val error: Boolean,
 
 	@field:SerializedName("message")
-	val message: String? = null
+	val message: String
 )
 
 data class ArticlesItem(
 
 	@field:SerializedName("date_published")
-	val datePublished: String? = null,
+	val datePublished: String,
 
 	@field:SerializedName("img_url")
-	val imgUrl: String? = null,
+	val imgUrl: String,
 
 	@field:SerializedName("publisher")
-	val publisher: String? = null,
+	val publisher: String,
 
 	@field:SerializedName("topic")
-	val topic: String? = null,
+	val topic: Any,
 
 	@field:SerializedName("id")
-	val id: Int? = null,
+	val id: Int,
 
 	@field:SerializedName("title")
-	val title: String? = null,
+	val title: String,
 
 	@field:SerializedName("content")
-	val content: String? = null
+	val content: String
 )
 
 data class Details(
 
-	@field:SerializedName("total_count")
-	val totalCount: Int? = null,
-
 	@field:SerializedName("articles")
-	val articles: List<ArticlesItem?>? = null
+	val articles: List<ArticlesItem>,
+
+	@field:SerializedName("Total_count")
+	val totalCount: Int
 )

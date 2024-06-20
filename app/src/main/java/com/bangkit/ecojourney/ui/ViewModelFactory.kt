@@ -5,15 +5,19 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.bangkit.ecojourney.data.repository.ArticleRepository
 import com.bangkit.ecojourney.data.repository.Repository
+import com.bangkit.ecojourney.data.repository.ScanRepository
 import com.bangkit.ecojourney.data.repository.UserRepository
 import com.bangkit.ecojourney.di.Injection
 import com.bangkit.ecojourney.ui.article.ArticleViewModel
 import com.bangkit.ecojourney.ui.home.HomeViewModel
 import com.bangkit.ecojourney.ui.onboarding.OnBoardingViewModel
 import com.bangkit.ecojourney.ui.splashscreen.SplashScreenViewModel
+import com.bangkit.ecojourney.ui.wastescan.WasteScanViewModel
 
-class ViewModelFactory(private val repository: Repository) : ViewModelProvider.NewInstanceFactory() {
-
+class ViewModelFactory(private val userRepository: UserRepository,
+                        private val articleRepository: ArticleRepository,
+                        private val scanRepository: ScanRepository
+) : ViewModelProvider.NewInstanceFactory() {
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return when {
@@ -29,6 +33,9 @@ class ViewModelFactory(private val repository: Repository) : ViewModelProvider.N
             modelClass.isAssignableFrom(ArticleViewModel::class.java) -> {
                 ArticleViewModel(repository as ArticleRepository) as T
             }
+            modelClass.isAssignableFrom(WasteScanViewModel::class.java) -> {
+                WasteScanViewModel(articleRepository, scanRepository) as T
+            }
 
             else -> throw IllegalArgumentException("Unknown ViewModel class: " + modelClass.name)
         }
@@ -39,11 +46,14 @@ class ViewModelFactory(private val repository: Repository) : ViewModelProvider.N
         private var INSTANCE: ViewModelFactory? = null
 
         @JvmStatic
-        fun getInstance(context: Context, type: String): ViewModelFactory {
-            synchronized(ViewModelFactory::class.java) {
-                when (type) {
-                    "user" -> INSTANCE = ViewModelFactory(Injection.provideUserRepository(context))
-                    "article" -> INSTANCE = ViewModelFactory(Injection.provideArticleRepository(context))
+        fun getInstance(context: Context): ViewModelFactory {
+            if (INSTANCE == null) {
+                synchronized(ViewModelFactory::class.java) {
+                    INSTANCE = ViewModelFactory(
+                        Injection.provideUserRepository(context),
+                        Injection.provideArticleRepository(context),
+                        Injection.provideScanRepository(context)
+                    )
                 }
             }
             return INSTANCE as ViewModelFactory

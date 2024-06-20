@@ -18,7 +18,8 @@ class ObjectDetectorHelper(
     var maxResults: Int = 3,
     var currentDelegate: Int = 0,
     val context: Context,
-    val objectDetectorListener: DetectorListener?
+    val objectDetectorListener: DetectorListener?,
+    var modelName: String = "model.tflite"
 ) {
 
     // For this example this needs to be a var so it can be reset on changes. If the ObjectDetector
@@ -66,8 +67,6 @@ class ObjectDetectorHelper(
 
         optionsBuilder.setBaseOptions(baseOptionsBuilder.build())
 
-        val modelName = "model.tflite"
-
         try {
             objectDetector =
                 ObjectDetector.createFromFileAndOptions(context, modelName, optionsBuilder.build())
@@ -106,6 +105,10 @@ class ObjectDetectorHelper(
             inferenceTime,
             tensorImage.height,
             tensorImage.width)
+    }
+
+    fun changeModel(modelName: String) {
+        this.modelName = modelName
     }
 
     interface DetectorListener {

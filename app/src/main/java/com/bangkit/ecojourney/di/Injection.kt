@@ -4,6 +4,7 @@ import android.content.Context
 import com.bangkit.ecojourney.data.pref.UserPreference
 import com.bangkit.ecojourney.data.pref.dataStore
 import com.bangkit.ecojourney.data.repository.ArticleRepository
+import com.bangkit.ecojourney.data.repository.ScanRepository
 import com.bangkit.ecojourney.data.repository.UserRepository
 import com.bangkit.ecojourney.data.retrofit.ApiConfig
 
@@ -15,8 +16,13 @@ object Injection {
     }
 
     fun provideArticleRepository(context: Context): ArticleRepository {
+        val apiService = ApiConfig.getApiService()
+        return ArticleRepository.getInstance(apiService)
+    }
+
+    fun provideScanRepository(context: Context): ScanRepository {
         val pref = UserPreference.getInstance(context.dataStore)
         val apiService = ApiConfig.getApiService()
-        return ArticleRepository.getInstance(pref, apiService)
+        return ScanRepository.getInstance(pref, apiService)
     }
 }

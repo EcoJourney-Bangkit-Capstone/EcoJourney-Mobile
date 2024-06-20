@@ -5,34 +5,45 @@ import com.bangkit.ecojourney.data.response.ArticleResponse
 import com.bangkit.ecojourney.data.response.LoginResponse
 import com.bangkit.ecojourney.data.response.LogoutResponse
 import com.bangkit.ecojourney.data.response.RegisterResponse
+import com.bangkit.ecojourney.data.response.ScanResponse
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.Call
+import retrofit2.http.Body
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
+import retrofit2.http.Header
+import retrofit2.http.Multipart
 import retrofit2.http.POST
+import retrofit2.http.Part
+import retrofit2.http.Path
 
 interface ApiService {
-    @FormUrlEncoded
-    @POST("auth/register")
+    @POST("api/auth/register")
     suspend fun register(
-        @Field("username") name: String,
-        @Field("email") email: String,
-        @Field("password") password: String
+        @Body requestBody: Map<String, String>
     ): RegisterResponse
 
-    @FormUrlEncoded
-    @POST("auth/login")
+    @POST("api/auth/login")
     suspend fun login(
-        @Field("email") email: String,
-        @Field("password") password: String
+        @Body requestBody: Map<String, String>
     ): LoginResponse
 
-    @FormUrlEncoded
     @POST("auth/logout")
     suspend fun logout(
-        @Field("email") email: String
+        @Body requestBody: Map<String, String>
     ): LogoutResponse
 
     @GET("api/article")
     fun getAllArticles(): Call<ArticleResponse>
+
+    @Multipart
+    @POST("api/waste-recognition")
+    suspend fun postScan(
+        @Header("Authorization") token: String,
+        @Part image: MultipartBody.Part,
+        @Part("type") type: RequestBody
+    ): ScanResponse
+
 }
