@@ -11,6 +11,8 @@ import com.bangkit.ecojourney.data.repository.ScanRepository
 import com.bangkit.ecojourney.data.response.ArticleResponse
 import com.bangkit.ecojourney.data.response.ArticlesItem
 import com.bangkit.ecojourney.data.response.ScanDetails
+import com.bangkit.ecojourney.data.response.ScanResponse
+import com.bangkit.ecojourney.ui.article.ArticleViewModel
 import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
@@ -35,6 +37,7 @@ class WasteScanViewModel(private val articleRepository: ArticleRepository, priva
             val response = articleRepository.searchArticles(keyword)
             if (response.details != null) _articles.value = response.details.articles
         }
+
     }
 
     fun postScan(image: File, types: List<String>) {
@@ -50,5 +53,6 @@ class WasteScanViewModel(private val articleRepository: ArticleRepository, priva
 
     companion object {
         private const val TAG = "WasteScanViewModel"
+
     }
 }

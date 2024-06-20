@@ -18,6 +18,7 @@ class ArticleRepository(private val apiService: ApiService) {
         return apiService.searchArticle(request)
     }
 
+
     companion object {
         @Volatile
         private var instance: ArticleRepository? = null

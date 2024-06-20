@@ -338,6 +338,7 @@ class WasteScanFragment : Fragment(), ObjectDetectorHelper.DetectorListener {
         dialog.findViewById<TextView>(R.id.wasteType)?.text = wasteScanned
 
         viewModel.searchArticle(wasteScanned)
+
         viewModel.articles.observe(viewLifecycleOwner) { articles ->
             val recyclerView = dialog.findViewById<RecyclerView>(R.id.rvRecommendedArticles)
             recyclerView?.layoutManager = LinearLayoutManager(requireActivity())
