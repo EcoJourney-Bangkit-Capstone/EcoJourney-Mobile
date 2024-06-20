@@ -61,6 +61,8 @@ class MainActivity : AppCompatActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
 
+        getSupportActionBar()?.hide();
+
         binding.fab.setOnClickListener {
             navController.navigate(R.id.navigation_scan)
             navView.menu.findItem(R.id.navigation_scan).isChecked = true

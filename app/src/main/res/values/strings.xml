@@ -61,7 +61,7 @@
     <string name="faq_answer_3">Yes, the app provides articles and news based on your waste classification and preferences.</string>
     <string name="faq_question_4">Is my data secure with EcoJourney?</string>
     <string name="faq_answer_4">Yes, EcoJourney ensures user data is encrypted and stored securely.</string>
-    <string name="home_faq_desc">Quick answers to common questions for easy solutions</string>
+    <string name="home_faq_desc">Quick answers to common questions</string>
     <string name="home_logout_button">Logout Button</string>
     <string name="home_feature_desc1">Waste Detection \nand Classification</string>
     <string name="home_feature_desc2">Article and News \nRecommendation</string>
