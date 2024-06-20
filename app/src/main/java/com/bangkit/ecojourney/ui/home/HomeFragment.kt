@@ -17,7 +17,7 @@ import com.bangkit.ecojourney.ui.onboarding.LoginActivity
 
 class HomeFragment : Fragment() {
     private val homeViewModel by viewModels<HomeViewModel> {
-        ViewModelFactory.getInstance(requireContext(), "user")
+        ViewModelFactory.getInstance(requireContext())
     }
     private var _binding: FragmentHomeBinding? = null
 

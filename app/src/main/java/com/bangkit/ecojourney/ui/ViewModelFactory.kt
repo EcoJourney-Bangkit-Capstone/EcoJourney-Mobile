@@ -22,16 +22,16 @@ class ViewModelFactory(private val userRepository: UserRepository,
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return when {
             modelClass.isAssignableFrom(SplashScreenViewModel::class.java) -> {
-                SplashScreenViewModel(repository as UserRepository) as T
+                SplashScreenViewModel(userRepository) as T
             }
             modelClass.isAssignableFrom(OnBoardingViewModel::class.java) -> {
-                OnBoardingViewModel(repository as UserRepository) as T
+                OnBoardingViewModel(userRepository) as T
             }
             modelClass.isAssignableFrom(HomeViewModel::class.java) -> {
-                HomeViewModel(repository as UserRepository) as T
+                HomeViewModel(userRepository) as T
             }
             modelClass.isAssignableFrom(ArticleViewModel::class.java) -> {
-                ArticleViewModel(repository as ArticleRepository) as T
+                ArticleViewModel(articleRepository) as T
             }
             modelClass.isAssignableFrom(WasteScanViewModel::class.java) -> {
                 WasteScanViewModel(articleRepository, scanRepository) as T

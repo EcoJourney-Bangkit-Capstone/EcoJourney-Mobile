@@ -16,8 +16,9 @@ object Injection {
     }
 
     fun provideArticleRepository(context: Context): ArticleRepository {
+        val pref = UserPreference.getInstance(context.dataStore)
         val apiService = ApiConfig.getApiService()
-        return ArticleRepository.getInstance(apiService)
+        return ArticleRepository.getInstance(pref, apiService)
     }
 
     fun provideScanRepository(context: Context): ScanRepository {

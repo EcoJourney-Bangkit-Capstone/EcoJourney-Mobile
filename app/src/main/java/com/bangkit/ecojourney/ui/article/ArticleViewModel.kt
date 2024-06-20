@@ -52,9 +52,6 @@ class ArticleViewModel(private val articleRepository: ArticleRepository) : ViewM
         })
     }
 
-    fun getSession(): LiveData<UserModel> {
-        return articleRepository.getSession().asLiveData()
-    }
 
     fun resetToast() {
         _errorToast.value = null

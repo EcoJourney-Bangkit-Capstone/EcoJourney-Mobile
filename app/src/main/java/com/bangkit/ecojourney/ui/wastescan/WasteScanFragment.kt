@@ -50,6 +50,10 @@ import java.util.UUID
 import java.util.concurrent.ExecutorService
 import androidx.camera.core.ImageProxy
 import androidx.camera.core.ImageProxy.PlaneProxy
+import androidx.navigation.fragment.findNavController
+import com.bangkit.ecojourney.ui.article.ArticleFragment
+import com.bangkit.ecojourney.ui.article.DetailArticleFragment
+import com.bangkit.ecojourney.utils.DateConverter
 
 class WasteScanFragment : Fragment(), ObjectDetectorHelper.DetectorListener {
     private val viewModel: WasteScanViewModel by viewModels<WasteScanViewModel> {
@@ -333,12 +337,25 @@ class WasteScanFragment : Fragment(), ObjectDetectorHelper.DetectorListener {
 
         dialog.findViewById<TextView>(R.id.wasteType)?.text = wasteScanned
 
-        viewModel.getArticles()
+        viewModel.searchArticle(wasteScanned)
         viewModel.articles.observe(viewLifecycleOwner) { articles ->
             val recyclerView = dialog.findViewById<RecyclerView>(R.id.rvRecommendedArticles)
             recyclerView?.layoutManager = LinearLayoutManager(requireActivity())
-            val adapter = ArticleRecommendAdapter(articles) { position ->
-                val article = articles[position]
+            val adapter = ArticleRecommendAdapter(articles) { it ->
+                val navController = findNavController()
+                val bundle = Bundle().apply {
+                    putString(DetailArticleFragment.EXTRA_TITLE, it.title)
+                    putString(DetailArticleFragment.EXTRA_PUBLISHER, it.publisher)
+                    putString(DetailArticleFragment.EXTRA_DATE, it.datePublished?.let { it1 ->
+                        DateConverter.formatDate(
+                            it1
+                        )
+                    })
+                    putString(DetailArticleFragment.EXTRA_CONTENT, it.content)
+                    putString(DetailArticleFragment.EXTRA_IMAGE, it.imgUrl)
+                }
+                Log.d(TAG, "title: ${it.title}, publisher: ${it.publisher}, date: ${it.datePublished}, content: ${it.content}, image: ${it.imgUrl}")
+                navController.navigate(R.id.action_navigation_scan_to_detailArticleFragment, bundle)
             }
             recyclerView?.adapter = adapter
         }
