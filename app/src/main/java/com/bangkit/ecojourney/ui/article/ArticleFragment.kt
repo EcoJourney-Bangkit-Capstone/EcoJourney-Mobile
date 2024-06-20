@@ -16,6 +16,7 @@ import androidx.core.view.get
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -28,8 +29,7 @@ import com.bangkit.ecojourney.adapter.ImageAdapter
 import com.bangkit.ecojourney.data.response.ArticleResponse
 import com.bangkit.ecojourney.databinding.FragmentArticleBinding
 import com.bangkit.ecojourney.ui.ViewModelFactory
-import com.bangkit.ecojourney.ui.onboarding.OnBoardingViewModel
-import com.google.android.material.tabs.TabLayoutMediator
+import com.bangkit.ecojourney.utils.DateConverter.Companion.formatDate
 import kotlin.math.abs
 
 class ArticleFragment : Fragment() {
@@ -114,7 +114,18 @@ class ArticleFragment : Fragment() {
     }
 
     private fun setArticleList(articles: ArticleResponse) {
-        val adapter = ArticleAdapter()
+        val adapter = ArticleAdapter {
+            val navController = findNavController()
+            val bundle = Bundle().apply {
+                putString(DetailArticleFragment.EXTRA_TITLE, it.title)
+                putString(DetailArticleFragment.EXTRA_PUBLISHER, it.publisher)
+                putString(DetailArticleFragment.EXTRA_DATE, it.datePublished?.let { it1 -> formatDate(it1) })
+                putString(DetailArticleFragment.EXTRA_CONTENT, it.content)
+                putString(DetailArticleFragment.EXTRA_IMAGE, it.imgUrl)
+            }
+            Log.d(TAG, "title: ${it.title}, publisher: ${it.publisher}, date: ${it.datePublished}, content: ${it.content}, image: ${it.imgUrl}")
+            navController.navigate(R.id.action_navigation_articles_to_detailArticleFragment, bundle)
+        }
         adapter.submitList(articles.details?.articles)
         binding.rvArticle.adapter = adapter
     }

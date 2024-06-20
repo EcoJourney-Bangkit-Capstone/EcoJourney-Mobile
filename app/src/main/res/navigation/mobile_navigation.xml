@@ -15,7 +15,11 @@
         android:id="@+id/navigation_articles"
         android:name="com.bangkit.ecojourney.ui.article.ArticleFragment"
         android:label="@string/title_articles"
-        tools:layout="@layout/fragment_article" />
+        tools:layout="@layout/fragment_article" >
+        <action
+            android:id="@+id/action_navigation_articles_to_detailArticleFragment"
+            app:destination="@id/detailArticleFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_scan"
@@ -28,4 +32,10 @@
         android:name="com.bangkit.ecojourney.ui.notifications.NotificationsFragment"
         android:label="@string/title_history"
         tools:layout="@layout/fragment_notifications" />
+
+    <fragment
+        android:id="@+id/detailArticleFragment"
+        android:name="com.bangkit.ecojourney.ui.article.DetailArticleFragment"
+        android:label="DetailArticleFragment">
+    </fragment>
 </navigation>

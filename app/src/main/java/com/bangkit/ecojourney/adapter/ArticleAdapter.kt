@@ -12,7 +12,7 @@ import com.bangkit.ecojourney.utils.DateConverter.Companion.formatDate
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 
-class ArticleAdapter():
+class ArticleAdapter(private val onClickCard: (ArticlesItem) -> Unit):
     ListAdapter<ArticlesItem, ArticleAdapter.MyViewHolder>(DIFF_CALLBACK) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
@@ -42,6 +42,7 @@ class ArticleAdapter():
 
             itemView.setOnClickListener {
 //                intent to detail article
+                onClickCard(article)
             }
         }
     }
