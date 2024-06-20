@@ -1,5 +1,6 @@
 package com.bangkit.ecojourney.data.retrofit
 
+import com.bangkit.ecojourney.data.repository.ArticleRepository
 import com.bangkit.ecojourney.data.response.ArticleResponse
 import com.bangkit.ecojourney.data.response.LoginResponse
 import com.bangkit.ecojourney.data.response.LogoutResponse
@@ -35,9 +36,7 @@ interface ApiService {
     ): LogoutResponse
 
     @GET("api/article")
-    suspend fun getArticle(
-
-    ): ArticleResponse
+    fun getAllArticles(): Call<ArticleResponse>
 
     @Multipart
     @POST("api/waste-recognition")

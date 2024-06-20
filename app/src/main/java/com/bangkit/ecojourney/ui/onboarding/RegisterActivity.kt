@@ -15,7 +15,7 @@ import com.bangkit.ecojourney.ui.ViewModelFactory
 
 class RegisterActivity : AppCompatActivity() {
     private val viewModel by viewModels<OnBoardingViewModel> {
-        ViewModelFactory.getInstance(this)
+        ViewModelFactory.getInstance(this, "user")
     }
     private lateinit var binding: ActivityRegisterBinding
 

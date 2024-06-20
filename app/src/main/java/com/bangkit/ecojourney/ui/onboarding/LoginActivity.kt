@@ -16,7 +16,7 @@ import com.bangkit.ecojourney.ui.ViewModelFactory
 
 class LoginActivity : AppCompatActivity() {
     private val viewModel by viewModels<OnBoardingViewModel> {
-        ViewModelFactory.getInstance(this)
+        ViewModelFactory.getInstance(this, "user")
     }
     private lateinit var binding: ActivityLoginBinding
 

@@ -1,16 +1,20 @@
 package com.bangkit.ecojourney.data.retrofit
 
+import com.bangkit.ecojourney.BuildConfig
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 object ApiConfig {
-    private const val BASE_URL = "https://private-2cc169-ecojourney.apiary-mock.com"
+    private const val BASE_URL = "https://private-70b5b-ecojourney.apiary-mock.com/"
 
     fun getApiService(): ApiService {
-        val loggingInterceptor =
+        val loggingInterceptor = if(BuildConfig.DEBUG) {
             HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
+        } else {
+            HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.NONE)
+        }
 
         val client = OkHttpClient.Builder()
             .addInterceptor(loggingInterceptor)
