@@ -8,7 +8,7 @@ import com.bangkit.ecojourney.data.WasteScanned
 import com.bangkit.ecojourney.databinding.ScanResultListItemBinding
 
 class ScanResultAdapter(
-    private val data: List<WasteScanned>,
+    private val data: List<String>,
     private val onClickListener: (Int) -> Unit) : RecyclerView.Adapter<ScanResultAdapter.ScanResultViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ScanResultViewHolder {
@@ -18,7 +18,7 @@ class ScanResultAdapter(
 
     override fun onBindViewHolder(holder: ScanResultViewHolder, position: Int) {
         val scanResult = data[position]
-        holder.binding.wasteType.text = scanResult.wasteType
+        holder.binding.wasteType.text = scanResult
 
         // Set click listener on the ViewHolder's root view
         holder.binding.viewArticlesBtn.setOnClickListener {
