@@ -14,6 +14,9 @@ import com.bangkit.ecojourney.R
 import com.bangkit.ecojourney.databinding.FragmentHomeBinding
 import com.bangkit.ecojourney.ui.ViewModelFactory
 import com.bangkit.ecojourney.ui.onboarding.LoginActivity
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class HomeFragment : Fragment() {
     private val homeViewModel by viewModels<HomeViewModel> {
@@ -45,6 +48,9 @@ class HomeFragment : Fragment() {
             setupFAQ(layoutFAQ2, cardFAQ2, answerFAQ2, btnFAQ2)
             setupFAQ(layoutFAQ3, cardFAQ3, answerFAQ3, btnFAQ3)
             setupFAQ(layoutFAQ4, cardFAQ4, answerFAQ4, btnFAQ4)
+
+            val currentDate = SimpleDateFormat("EEEE, d MMM yyyy", Locale.getDefault()).format(Date())
+            tvDate.text = currentDate
         }
 
         return root

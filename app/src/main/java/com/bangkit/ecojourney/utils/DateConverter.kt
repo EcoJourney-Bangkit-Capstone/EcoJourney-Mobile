@@ -14,7 +14,7 @@ class DateConverter {
 
         fun formatDate(dateString: String): String {
             val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.ENGLISH)
-            val outputFormat = SimpleDateFormat("d MMMM yyyy", Locale.ENGLISH)
+            val outputFormat = SimpleDateFormat("EEEE, d MMM yyyy", Locale.ENGLISH)
             val date = inputFormat.parse(dateString)
             return outputFormat.format(date!!)
         }
