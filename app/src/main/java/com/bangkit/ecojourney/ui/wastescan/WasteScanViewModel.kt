@@ -23,28 +23,21 @@ class WasteScanViewModel(private val articleRepository: ArticleRepository, priva
     private val _articles = MutableLiveData<List<ArticlesItem>>()
     val articles: LiveData<List<ArticlesItem>> = _articles
 
+    private val _isLoading = MutableLiveData<Boolean>()
+    val isLoading: LiveData<Boolean> = _isLoading
+
+    private val _errorToast = MutableLiveData<Boolean?>()
+    val errorToast: LiveData<Boolean?> = _errorToast
+
     private val _scanResponse = MutableLiveData<ScanDetails?>()
     val scanResponse: LiveData<ScanDetails?> get() = _scanResponse
 
-    fun getAllArticles() {
-        val client = articleRepository.getAllArticles()
-        client.enqueue(object : Callback<ArticleResponse> {
-            override fun onResponse(
-                call: Call<ArticleResponse>,
-                response: Response<ArticleResponse>
-            ) {
-                if (response.isSuccessful) {
-                    _articles.value = response.body()?.details?.articles
-                    if (BuildConfig.DEBUG) Log.d(WasteScanViewModel.TAG, "onResponse: ${response.body()}")
-                }
-                else {
-                    if (BuildConfig.DEBUG) Log.d(WasteScanViewModel.TAG, "onFailResponse: ${response.message()}")
-                }
-            }
-            override fun onFailure(call: Call<ArticleResponse>, t: Throwable) {
-                if (BuildConfig.DEBUG) Log.d(WasteScanViewModel.TAG, "onFailure: ${t.message}")
-            }
-        })
+    fun searchArticle(keyword: String) {
+        viewModelScope.launch {
+            val response = articleRepository.searchArticles(keyword)
+            if (response.details != null) _articles.value = response.details.articles
+        }
+
     }
 
     fun postScan(image: File, types: List<String>) {
@@ -54,7 +47,12 @@ class WasteScanViewModel(private val articleRepository: ArticleRepository, priva
         }
     }
 
+    fun resetToast() {
+        _errorToast.value = null
+    }
+
     companion object {
-        const val TAG = "WasteScanViewModel"
+        private const val TAG = "WasteScanViewModel"
+
     }
 }

@@ -25,7 +25,11 @@
         android:id="@+id/navigation_scan"
         android:name="com.bangkit.ecojourney.ui.wastescan.WasteScanFragment"
         android:label="@string/title_waste_scan"
-        tools:layout="@layout/fragment_waste_scan" />
+        tools:layout="@layout/fragment_waste_scan" >
+        <action
+            android:id="@+id/action_navigation_scan_to_detailArticleFragment"
+            app:destination="@id/detailArticleFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_history"

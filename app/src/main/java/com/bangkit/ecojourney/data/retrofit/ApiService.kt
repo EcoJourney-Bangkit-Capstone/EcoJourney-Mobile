@@ -35,8 +35,13 @@ interface ApiService {
         @Body requestBody: Map<String, String>
     ): LogoutResponse
 
-    @GET("api/article")
+    @GET("api/articles")
     fun getAllArticles(): Call<ArticleResponse>
+
+    @POST("api/articles/search")
+    suspend fun searchArticle(
+        @Body requestBody: Map<String, String>
+    ): ArticleResponse
 
     @Multipart
     @POST("api/waste-recognition")

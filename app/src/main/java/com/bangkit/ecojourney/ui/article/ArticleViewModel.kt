@@ -52,6 +52,7 @@ class ArticleViewModel(private val articleRepository: ArticleRepository) : ViewM
         })
     }
 
+
     fun resetToast() {
         _errorToast.value = null
     }
