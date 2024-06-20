@@ -2,6 +2,7 @@ package com.bangkit.ecojourney.data.retrofit
 
 import com.bangkit.ecojourney.data.repository.ArticleRepository
 import com.bangkit.ecojourney.data.response.ArticleResponse
+import com.bangkit.ecojourney.data.response.HistoryResponse
 import com.bangkit.ecojourney.data.response.LoginResponse
 import com.bangkit.ecojourney.data.response.LogoutResponse
 import com.bangkit.ecojourney.data.response.RegisterResponse
@@ -50,7 +51,13 @@ interface ApiService {
     suspend fun postScan(
         @Header("Authorization") token: String,
         @Part image: MultipartBody.Part,
-        @Part("type") type: RequestBody
+        @Part vararg types: MultipartBody.Part
     ): ScanResponse
+
+    @GET("api/waste-recognition/history")
+    suspend fun getHistory(
+        @Header("Authorization") token: String
+    ): HistoryResponse
+
 
 }

@@ -32,7 +32,7 @@ class ViewModelFactory(private val userRepository: UserRepository,
                 HomeViewModel(userRepository) as T
             }
             modelClass.isAssignableFrom(HistoryViewModel::class.java) -> {
-                HistoryViewModel() as T
+                HistoryViewModel(scanRepository) as T
             }
             modelClass.isAssignableFrom(ArticleViewModel::class.java) -> {
                 ArticleViewModel(articleRepository) as T

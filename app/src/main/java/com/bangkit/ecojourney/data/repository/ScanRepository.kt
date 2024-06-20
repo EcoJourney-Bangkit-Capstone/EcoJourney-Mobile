@@ -3,6 +3,7 @@ package com.bangkit.ecojourney.data.repository
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.bangkit.ecojourney.data.pref.UserPreference
+import com.bangkit.ecojourney.data.response.HistoryResponse
 import com.bangkit.ecojourney.data.response.ScanResponse
 import com.bangkit.ecojourney.data.retrofit.ApiService
 import kotlinx.coroutines.Dispatchers
@@ -27,14 +28,19 @@ class ScanRepository private constructor(
         val requestFile = image.asRequestBody("image/jpeg".toMediaTypeOrNull())
         val imagePart = MultipartBody.Part.createFormData("image", image.name, requestFile)
 
-        val typeRequestBody =
-            types.joinToString(",").toRequestBody("text/plain".toMediaTypeOrNull())
+        val typeParts = types.map { type ->
+            MultipartBody.Part.createFormData("type", type)
+        }.toTypedArray()
 
         val response = withContext(Dispatchers.IO) {
-            apiService.postScan("Bearer ${userPreference.getSession().first().token}", imagePart, typeRequestBody)
+            apiService.postScan("Bearer ${userPreference.getSession().first().token}", imagePart, *typeParts)
         }
 
         return response
+    }
+
+    suspend fun getHistory(): HistoryResponse {
+        return apiService.getHistory("Bearer ${userPreference.getSession().first().token}")
     }
 
     companion object {
