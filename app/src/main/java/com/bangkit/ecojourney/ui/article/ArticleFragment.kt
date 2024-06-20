@@ -38,7 +38,7 @@ class ArticleFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val viewModel by viewModels<ArticleViewModel> {
-        ViewModelFactory.getInstance(requireContext(), "article")
+        ViewModelFactory.getInstance(requireContext())
     }
 
     private lateinit var viewPager2: ViewPager2

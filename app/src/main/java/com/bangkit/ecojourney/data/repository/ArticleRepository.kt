@@ -6,9 +6,7 @@ import com.bangkit.ecojourney.data.retrofit.ApiService
 
 class ArticleRepository(private val apiService: ApiService) {
 
-    suspend fun getArticles(): ArticleResponse {
-        return apiService.getArticle()
-    }
+    fun getAllArticles() = apiService.getAllArticles()
 
     companion object {
         @Volatile

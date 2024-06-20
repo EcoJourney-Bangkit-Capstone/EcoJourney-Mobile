@@ -45,15 +45,11 @@ class ArticleViewModel(private val articleRepository: ArticleRepository) : ViewM
                 }
             }
             override fun onFailure(call: Call<ArticleResponse>, t: Throwable) {
-                if (BuildConfig.DEBUG) Log.d(TAG, "onFailure: ${t}")
+                if (BuildConfig.DEBUG) Log.d(TAG, "onFailure: ${t.message}")
                 _isLoading.value = false
                 _errorToast.value = false
             }
         })
-    }
-
-    fun getSession(): LiveData<UserModel> {
-        return articleRepository.getSession().asLiveData()
     }
 
     fun resetToast() {
@@ -61,6 +57,6 @@ class ArticleViewModel(private val articleRepository: ArticleRepository) : ViewM
     }
 
     companion object {
-        private const val TAG = "MainViewModel"
+        private const val TAG = "ArticleViewModel"
     }
 }

@@ -31,7 +31,7 @@ class ArticleAdapter(private val onClickCard: (ArticlesItem) -> Unit):
         fun bind(article: ArticlesItem) {
             with (binding) {
                 tvTitle.text = article.title
-                tvDate.text = article.datePublished?.let { formatDate(it) }
+                tvDate.text = formatDate(article.datePublished)
                 tvPublisher.text = article.publisher
                 Glide.with(binding.root)
                     .load(article.imgUrl)
