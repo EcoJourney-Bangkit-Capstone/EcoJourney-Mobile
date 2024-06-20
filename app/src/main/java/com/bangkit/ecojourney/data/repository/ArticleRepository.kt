@@ -23,6 +23,7 @@ class ArticleRepository(private val apiService: ApiService) {
         @Volatile
         private var instance: ArticleRepository? = null
         fun getInstance(
+            pref: UserPreference,
             apiService: ApiService
         ): ArticleRepository =
             instance ?: synchronized(this) {
