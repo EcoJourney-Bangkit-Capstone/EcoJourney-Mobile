@@ -33,9 +33,13 @@
 
     <fragment
         android:id="@+id/navigation_history"
-        android:name="com.bangkit.ecojourney.ui.notifications.NotificationsFragment"
+        android:name="com.bangkit.ecojourney.ui.history.HistoryFragment"
         android:label="@string/title_history"
-        tools:layout="@layout/fragment_notifications" />
+        tools:layout="@layout/fragment_history" >
+        <action
+            android:id="@+id/action_navigation_history_to_detailArticleFragment"
+            app:destination="@id/detailArticleFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/detailArticleFragment"
