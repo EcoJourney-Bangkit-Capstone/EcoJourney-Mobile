@@ -172,5 +172,6 @@
     <string name="name_hint">Enter your name</string>
     <string name="confirm_password_hint">Enter your password again</string>
     <string name="sign_in">Sign In</string>
+    <string name="home_feature_desc3">Waste Type \nClassification History</string>
 
 </resources>
