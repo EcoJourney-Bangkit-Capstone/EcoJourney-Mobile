@@ -63,7 +63,7 @@ class UserRepository private constructor(
         return response
     }
 
-    suspend fun getSelfInfo(): SelfResponse = apiService.getSelfInfo()
+    suspend fun getSelfInfo(): SelfResponse = apiService.getSelfInfo("Bearer ${userPreference.getSession().first().token}")
 
 //    suspend fun register(name: String, email: String, password: String): RegisterResponse {
 //        return apiService.register(name, email, password)

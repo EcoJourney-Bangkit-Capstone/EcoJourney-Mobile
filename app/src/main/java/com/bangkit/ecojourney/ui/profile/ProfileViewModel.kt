@@ -21,15 +21,21 @@ import retrofit2.Response
 class ProfileViewModel(private val userRepository: UserRepository) : ViewModel() {
 
     private val _selfResponse = MutableLiveData<SelfResponse?>()
-    val selfResponse: LiveData<SelfResponse?> get() = _selfResponse
+    val selfResponse: LiveData<SelfResponse?> = _selfResponse
 
     fun getSelfInfo() {
         viewModelScope.launch {
             val response = userRepository.getSelfInfo()
             if (!response.error!!) _selfResponse.value = response
         }
-
     }
+
+    fun logout() {
+        viewModelScope.launch {
+            userRepository.logout()
+        }
+    }
+
     companion object {
         private const val TAG = "ArticleViewModel"
     }

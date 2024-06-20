@@ -29,7 +29,7 @@ data class ArticlesItem(
 	val topic: Any,
 
 	@field:SerializedName("id")
-	val id: Int,
+	val id: String,
 
 	@field:SerializedName("title")
 	val title: String,

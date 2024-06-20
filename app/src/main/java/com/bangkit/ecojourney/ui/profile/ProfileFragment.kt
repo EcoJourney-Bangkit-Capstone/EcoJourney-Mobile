@@ -1,5 +1,6 @@
 package com.bangkit.ecojourney.ui.profile
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -11,6 +12,7 @@ import com.bangkit.ecojourney.databinding.FragmentArticleBinding
 import com.bangkit.ecojourney.databinding.FragmentProfileBinding
 import com.bangkit.ecojourney.ui.ViewModelFactory
 import com.bangkit.ecojourney.ui.article.ArticleViewModel
+import com.bangkit.ecojourney.ui.onboarding.LoginActivity
 
 class ProfileFragment : Fragment() {
     private var _binding: FragmentProfileBinding? = null
@@ -22,9 +24,10 @@ class ProfileFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_profile, container, false)
+        _binding = FragmentProfileBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -38,5 +41,21 @@ class ProfileFragment : Fragment() {
                 tvEmail.text = it?.data?.email ?: "user@gmail.com"
             }
         }
+
+        binding.backCard.setOnClickListener {
+            requireActivity().onBackPressed()
+        }
+
+        binding.logoutBtn.setOnClickListener {
+            viewModel.logout()
+            val intent = Intent(activity, LoginActivity::class.java)
+            startActivity(intent)
+            activity?.finish()
+        }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

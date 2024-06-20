@@ -37,7 +37,9 @@ interface ApiService {
     ): LogoutResponse
 
     @GET("api/articles")
-    fun getAllArticles(): Call<ArticleResponse>
+    suspend fun getAllArticles(
+        @Header("Authorization") token: String
+    ): ArticleResponse
 
     @POST("api/articles/search")
     suspend fun searchArticle(
@@ -53,6 +55,8 @@ interface ApiService {
     ): ScanResponse
 
     @GET("api/user/self")
-    suspend fun getSelfInfo(): SelfResponse
+    suspend fun getSelfInfo(
+        @Header("Authorization") token: String
+    ): SelfResponse
 
 }

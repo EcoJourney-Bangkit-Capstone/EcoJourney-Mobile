@@ -119,7 +119,7 @@ class ArticleFragment : Fragment() {
             val bundle = Bundle().apply {
                 putString(DetailArticleFragment.EXTRA_TITLE, it.title)
                 putString(DetailArticleFragment.EXTRA_PUBLISHER, it.publisher)
-                putString(DetailArticleFragment.EXTRA_DATE, it.datePublished?.let { it1 -> formatDate(it1) })
+                putString(DetailArticleFragment.EXTRA_DATE, formatDate(it.datePublished))
                 putString(DetailArticleFragment.EXTRA_CONTENT, it.content)
                 putString(DetailArticleFragment.EXTRA_IMAGE, it.imgUrl)
             }
