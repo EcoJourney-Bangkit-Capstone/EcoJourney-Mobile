@@ -6,6 +6,7 @@ import com.bangkit.ecojourney.data.response.LoginResponse
 import com.bangkit.ecojourney.data.response.LogoutResponse
 import com.bangkit.ecojourney.data.response.RegisterResponse
 import com.bangkit.ecojourney.data.response.ScanResponse
+import com.bangkit.ecojourney.data.response.SelfResponse
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Call
@@ -36,9 +37,9 @@ interface ApiService {
     ): LogoutResponse
 
     @GET("api/articles")
-    fun getAllArticles(
+    suspend fun getAllArticles(
         @Header("Authorization") token: String
-    ): Call<ArticleResponse>
+    ): ArticleResponse
 
     @POST("api/articles/search")
     suspend fun searchArticle(
@@ -52,5 +53,10 @@ interface ApiService {
         @Part image: MultipartBody.Part,
         @Part("type") type: RequestBody
     ): ScanResponse
+
+    @GET("api/user/self")
+    suspend fun getSelfInfo(
+        @Header("Authorization") token: String
+    ): SelfResponse
 
 }

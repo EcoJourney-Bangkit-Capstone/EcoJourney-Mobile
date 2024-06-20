@@ -11,6 +11,7 @@ import com.bangkit.ecojourney.di.Injection
 import com.bangkit.ecojourney.ui.article.ArticleViewModel
 import com.bangkit.ecojourney.ui.home.HomeViewModel
 import com.bangkit.ecojourney.ui.onboarding.OnBoardingViewModel
+import com.bangkit.ecojourney.ui.profile.ProfileViewModel
 import com.bangkit.ecojourney.ui.splashscreen.SplashScreenViewModel
 import com.bangkit.ecojourney.ui.wastescan.WasteScanViewModel
 
@@ -35,6 +36,9 @@ class ViewModelFactory(private val userRepository: UserRepository,
             }
             modelClass.isAssignableFrom(WasteScanViewModel::class.java) -> {
                 WasteScanViewModel(articleRepository, scanRepository) as T
+            }
+            modelClass.isAssignableFrom(ProfileViewModel::class.java) -> {
+                ProfileViewModel(userRepository) as T
             }
 
             else -> throw IllegalArgumentException("Unknown ViewModel class: " + modelClass.name)

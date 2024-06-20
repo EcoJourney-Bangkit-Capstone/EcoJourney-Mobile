@@ -5,6 +5,7 @@ import com.bangkit.ecojourney.data.pref.UserModel
 import com.bangkit.ecojourney.data.pref.UserPreference
 import com.bangkit.ecojourney.data.response.LoginResponse
 import com.bangkit.ecojourney.data.response.RegisterResponse
+import com.bangkit.ecojourney.data.response.SelfResponse
 import com.bangkit.ecojourney.data.retrofit.ApiService
 import com.bangkit.ecojourney.ui.onboarding.LoginActivity
 import kotlinx.coroutines.flow.Flow
@@ -61,6 +62,8 @@ class UserRepository private constructor(
         }
         return response
     }
+
+    suspend fun getSelfInfo(): SelfResponse = apiService.getSelfInfo("Bearer ${userPreference.getSession().first().token}")
 
 //    suspend fun register(name: String, email: String, password: String): RegisterResponse {
 //        return apiService.register(name, email, password)
