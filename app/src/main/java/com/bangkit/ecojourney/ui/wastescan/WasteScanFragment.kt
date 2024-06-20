@@ -24,6 +24,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
 import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
@@ -54,6 +55,8 @@ import androidx.navigation.fragment.findNavController
 import com.bangkit.ecojourney.ui.article.ArticleFragment
 import com.bangkit.ecojourney.ui.article.DetailArticleFragment
 import com.bangkit.ecojourney.utils.DateConverter
+import com.bangkit.ecojourney.utils.ImageClassifierHelper
+import org.tensorflow.lite.task.vision.classifier.Classifications
 
 class WasteScanFragment : Fragment(), ObjectDetectorHelper.DetectorListener {
     private val viewModel: WasteScanViewModel by viewModels<WasteScanViewModel> {
@@ -62,6 +65,7 @@ class WasteScanFragment : Fragment(), ObjectDetectorHelper.DetectorListener {
     private lateinit var binding: FragmentWasteScanBinding
 
     private lateinit var objectDetectorHelper: ObjectDetectorHelper
+    private lateinit var imageClassifierHelper: ImageClassifierHelper
     private lateinit var bitmapBuffer: Bitmap
     private var preview: Preview? = null
     private var imageAnalyzer: ImageAnalysis? = null
@@ -71,6 +75,7 @@ class WasteScanFragment : Fragment(), ObjectDetectorHelper.DetectorListener {
     private lateinit var cameraExecutor: ExecutorService
 
     var wasteTypeScanned: MutableList<Detection>? = null
+    var wasteTypeClassified: List<Classifications>? = null
 
     private var currentImageUri: Uri? = null
     private lateinit var surfaceTexture: SurfaceTexture
@@ -339,26 +344,46 @@ class WasteScanFragment : Fragment(), ObjectDetectorHelper.DetectorListener {
 
         viewModel.searchArticle(wasteScanned)
 
-        viewModel.articles.observe(viewLifecycleOwner) { articles ->
-            val recyclerView = dialog.findViewById<RecyclerView>(R.id.rvRecommendedArticles)
-            recyclerView?.layoutManager = LinearLayoutManager(requireActivity())
-            val adapter = ArticleRecommendAdapter(articles) { it ->
-                val navController = findNavController()
-                val bundle = Bundle().apply {
-                    putString(DetailArticleFragment.EXTRA_TITLE, it.title)
-                    putString(DetailArticleFragment.EXTRA_PUBLISHER, it.publisher)
-                    putString(DetailArticleFragment.EXTRA_DATE, it.datePublished?.let { it1 ->
-                        DateConverter.formatDate(
-                            it1
+        viewModel.articles.observe(viewLifecycleOwner) { response ->
+            if (!response.error) {
+                val recyclerView = dialog.findViewById<RecyclerView>(R.id.rvRecommendedArticles)
+                recyclerView?.layoutManager = LinearLayoutManager(requireActivity())
+                val adapter = response.details?.let {
+                    ArticleRecommendAdapter(it.articles) { it ->
+                        val navController = findNavController()
+                        val bundle = Bundle().apply {
+                            putString(DetailArticleFragment.EXTRA_TITLE, it.title)
+                            putString(DetailArticleFragment.EXTRA_PUBLISHER, it.publisher)
+                            putString(
+                                DetailArticleFragment.EXTRA_DATE,
+                                it.datePublished?.let { it1 ->
+                                    DateConverter.formatDate(
+                                        it1
+                                    )
+                                })
+                            putString(DetailArticleFragment.EXTRA_CONTENT, it.content)
+                            putString(DetailArticleFragment.EXTRA_IMAGE, it.imgUrl)
+                        }
+                        Log.d(
+                            TAG,
+                            "title: ${it.title}, publisher: ${it.publisher}, date: ${it.datePublished}, content: ${it.content}, image: ${it.imgUrl}"
                         )
-                    })
-                    putString(DetailArticleFragment.EXTRA_CONTENT, it.content)
-                    putString(DetailArticleFragment.EXTRA_IMAGE, it.imgUrl)
+                        navController.navigate(
+                            R.id.action_navigation_scan_to_detailArticleFragment,
+                            bundle
+                        )
+                    }
                 }
-                Log.d(TAG, "title: ${it.title}, publisher: ${it.publisher}, date: ${it.datePublished}, content: ${it.content}, image: ${it.imgUrl}")
-                navController.navigate(R.id.action_navigation_scan_to_detailArticleFragment, bundle)
+                recyclerView?.adapter = adapter
+            } else {
+                AlertDialog.Builder(requireContext()).apply {
+                    setTitle("Oops!")
+                    setMessage(response.message)
+                    setPositiveButton("Back", null)
+                    create()
+                    show()
+                }
             }
-            recyclerView?.adapter = adapter
         }
 
         setDialogBehaviour(dialog)
@@ -400,14 +425,45 @@ class WasteScanFragment : Fragment(), ObjectDetectorHelper.DetectorListener {
     }
 
     private fun classifyImage() {
-        currentImageUri?.let {
-            Toast.makeText(requireContext(), "This Feature is not available yet", Toast.LENGTH_SHORT).show()
+        imageClassifierHelper = ImageClassifierHelper(
+            context = requireContext(),
+            classifierListener = object : ImageClassifierHelper.ClassifierListener {
+                override fun onResults(results: List<Classifications>?, inferenceTime: Long) {
+                    wasteTypeClassified = results
+                }
+
+                override fun onError(error: String) {
+                    requireActivity().runOnUiThread {
+                        Toast.makeText(requireContext(), error, Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+        )
+        currentImageUri?.let { imageClassifierHelper.classifyStaticImage(it) }
+
+        val contentResolver = requireContext().contentResolver
+        val inputStream = currentImageUri?.let { contentResolver.openInputStream(it) }
+        val bitmap = BitmapFactory.decodeStream(inputStream)
+
+        val setOfWasteType = HashSet<String>()
+
+        for (detection in wasteTypeClassified!!) {
+            for (category in detection.categories) {
+                setOfWasteType.add(category.label.trimEnd())
+            }
         }
 
-        currentImageUri?.let {
-            Log.d("Image URI", "showImage: $it")
+        val listOfWasteScanned = setOfWasteType.map { it }
 
+        if (listOfWasteScanned.isNotEmpty()) {
+            val image = bitmapToFile(bitmap)
+            viewModel.postScan(image, listOfWasteScanned)
+            viewModel.scanResponse.observe(viewLifecycleOwner) { scanResponse ->
+                Log.d("SCAN RESPONSE", scanResponse.toString())
+            }
         }
+
+        showBottomSheet(listOfWasteScanned)
     }
 
 

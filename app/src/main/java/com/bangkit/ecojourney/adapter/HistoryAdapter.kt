@@ -1,14 +1,5 @@
 package com.bangkit.ecojourney.adapter
 
-import android.provider.Settings.System.DATE_FORMAT
-import android.view.LayoutInflater
-import android.view.ViewGroup
-import androidx.recyclerview.widget.RecyclerView
-import com.bangkit.ecojourney.data.ScanResult
-import com.bangkit.ecojourney.databinding.ScanHistoryListItemBinding
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -20,9 +11,6 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 import java.util.TimeZone
-
-class HistoryAdapter(
-    private val data: List<ScanResult>,
 
 class HistoryAdapter(
     private val data: List<HistoryItem>,

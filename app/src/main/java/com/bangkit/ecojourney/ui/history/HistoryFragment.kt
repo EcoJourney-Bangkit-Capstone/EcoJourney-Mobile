@@ -14,6 +14,7 @@ import android.view.Window
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -138,26 +139,45 @@ class HistoryFragment : Fragment() {
 
         scanWasteViewModel.searchArticle(wasteScanned)
 
-        scanWasteViewModel.articles.observe(viewLifecycleOwner) { articles ->
-            val recyclerView = dialog.findViewById<RecyclerView>(R.id.rvRecommendedArticles)
-            recyclerView?.layoutManager = LinearLayoutManager(requireActivity())
-            val adapter = ArticleRecommendAdapter(articles) { it ->
-                val navController = findNavController()
-                val bundle = Bundle().apply {
-                    putString(DetailArticleFragment.EXTRA_TITLE, it.title)
-                    putString(DetailArticleFragment.EXTRA_PUBLISHER, it.publisher)
-                    putString(DetailArticleFragment.EXTRA_DATE, it.datePublished?.let { it1 ->
-                        DateConverter.formatDate(
-                            it1
+        scanWasteViewModel.articles.observe(viewLifecycleOwner) { response  ->
+            if (!response.error) {
+                val recyclerView = dialog.findViewById<RecyclerView>(R.id.rvRecommendedArticles)
+                recyclerView?.layoutManager = LinearLayoutManager(requireActivity())
+                val adapter = response.details?.let {
+                    ArticleRecommendAdapter(it.articles) {
+                        val navController = findNavController()
+                        val bundle = Bundle().apply {
+                            putString(DetailArticleFragment.EXTRA_TITLE, it.title)
+                            putString(DetailArticleFragment.EXTRA_PUBLISHER, it.publisher)
+                            putString(
+                                DetailArticleFragment.EXTRA_DATE,
+                                it.datePublished?.let { it1 ->
+                                    DateConverter.formatDate(
+                                        it1
+                                    )
+                                })
+                            putString(DetailArticleFragment.EXTRA_CONTENT, it.content)
+                            putString(DetailArticleFragment.EXTRA_IMAGE, it.imgUrl)
+                        }
+                        Log.d(
+                            TAG, "title: ${it.title}, publisher: ${it.publisher}, date: ${it.datePublished}, content: ${it.content}, image: ${it.imgUrl}"
                         )
-                    })
-                    putString(DetailArticleFragment.EXTRA_CONTENT, it.content)
-                    putString(DetailArticleFragment.EXTRA_IMAGE, it.imgUrl)
+                        navController.navigate(
+                            R.id.action_navigation_history_to_detailArticleFragment,
+                            bundle
+                        )
+                    }
                 }
-                Log.d(TAG, "title: ${it.title}, publisher: ${it.publisher}, date: ${it.datePublished}, content: ${it.content}, image: ${it.imgUrl}")
-                navController.navigate(R.id.action_navigation_history_to_detailArticleFragment, bundle)
+                recyclerView?.adapter = adapter
+            } else {
+                AlertDialog.Builder(requireContext()).apply {
+                    setTitle("Oops!")
+                    setMessage(response.message)
+                    setPositiveButton("Back", null)
+                    create()
+                    show()
+                }
             }
-            recyclerView?.adapter = adapter
         }
 
         setDialogBehaviour(dialog)

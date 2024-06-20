@@ -20,8 +20,8 @@ import retrofit2.Response
 import java.io.File
 
 class WasteScanViewModel(private val articleRepository: ArticleRepository, private val scanRepository: ScanRepository): ViewModel() {
-    private val _articles = MutableLiveData<List<ArticlesItem>>()
-    val articles: LiveData<List<ArticlesItem>> = _articles
+    private val _articles = MutableLiveData<ArticleResponse>()
+    val articles: LiveData<ArticleResponse> = _articles
 
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
@@ -35,7 +35,7 @@ class WasteScanViewModel(private val articleRepository: ArticleRepository, priva
     fun searchArticle(keyword: String) {
         viewModelScope.launch {
             val response = articleRepository.searchArticles(keyword)
-            if (response.details != null) _articles.value = response.details.articles
+            if (response.details != null) _articles.value = response
         }
 
     }
