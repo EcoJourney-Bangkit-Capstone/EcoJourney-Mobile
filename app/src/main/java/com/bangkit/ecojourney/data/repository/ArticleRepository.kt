@@ -7,10 +7,13 @@ import com.bangkit.ecojourney.data.retrofit.ApiService
 import kotlinx.coroutines.flow.first
 import retrofit2.Call
 
-class ArticleRepository(private val userPreference: UserPreference, private val apiService: ApiService) {
 
+class ArticleRepository private constructor(
+    private val userPreference: UserPreference,
+    private val apiService: ApiService
+) {
+  
     suspend fun getAllArticles(): ArticleResponse {
-        Log.d("token", userPreference.getSession().first().token)
         return apiService.getAllArticles("Bearer ${userPreference.getSession().first().token}")
     }
 
@@ -26,11 +29,11 @@ class ArticleRepository(private val userPreference: UserPreference, private val 
         @Volatile
         private var instance: ArticleRepository? = null
         fun getInstance(
-            pref: UserPreference,
+            userPreference: UserPreference,
             apiService: ApiService
         ): ArticleRepository =
             instance ?: synchronized(this) {
-                instance ?: ArticleRepository(pref, apiService)
+                instance ?: ArticleRepository(userPreference, apiService)
             }.also { instance = it }
     }
 }
