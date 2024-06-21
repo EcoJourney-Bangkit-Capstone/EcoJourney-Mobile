@@ -144,23 +144,25 @@ class HistoryFragment : Fragment() {
                 val recyclerView = dialog.findViewById<RecyclerView>(R.id.rvRecommendedArticles)
                 recyclerView?.layoutManager = LinearLayoutManager(requireActivity())
                 val adapter = response.details?.let {
-                    ArticleRecommendAdapter(it.articles) {
+                    ArticleRecommendAdapter(it.articles) {article ->
                         val navController = findNavController()
                         val bundle = Bundle().apply {
-                            putString(DetailArticleFragment.EXTRA_TITLE, it.title)
-                            putString(DetailArticleFragment.EXTRA_PUBLISHER, it.publisher)
-                            putString(
-                                DetailArticleFragment.EXTRA_DATE,
-                                it.datePublished.let { it1 ->
-                                    DateConverter.formatDate(
-                                        it1
-                                    )
-                                })
-                            putString(DetailArticleFragment.EXTRA_CONTENT, it.content)
-                            putString(DetailArticleFragment.EXTRA_IMAGE, it.imgUrl)
+                            putString(DetailArticleFragment.EXTRA_TITLE, article.title)
+                            putString(DetailArticleFragment.EXTRA_PUBLISHER, article.publisher)
+                            if (article.datePublished != null) {
+                                putString(
+                                    DetailArticleFragment.EXTRA_DATE,
+                                    article.datePublished.let { it1 ->
+                                        DateConverter.formatDate(
+                                            it1
+                                        )
+                                    })
+                            }
+                            putString(DetailArticleFragment.EXTRA_CONTENT, article.content)
+                            putString(DetailArticleFragment.EXTRA_IMAGE, article.imgUrl)
                         }
                         Log.d(
-                            TAG, "title: ${it.title}, publisher: ${it.publisher}, date: ${it.datePublished}, content: ${it.content}, image: ${it.imgUrl}"
+                            TAG, "title: ${article.title}, publisher: ${article.publisher}, date: ${article.datePublished}, content: ${article.content}, image: ${article.imgUrl}"
                         )
                         navController.navigate(
                             R.id.action_navigation_history_to_detailArticleFragment,
