@@ -10,6 +10,7 @@ import android.view.WindowManager
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import com.bangkit.ecojourney.MainActivity
 import com.bangkit.ecojourney.databinding.ActivityLoginBinding
 import com.bangkit.ecojourney.ui.ViewModelFactory
@@ -22,6 +23,7 @@ class LoginActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
