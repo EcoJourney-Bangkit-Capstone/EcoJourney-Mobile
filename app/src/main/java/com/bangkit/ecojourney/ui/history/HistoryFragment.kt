@@ -1,7 +1,5 @@
 package com.bangkit.ecojourney.ui.history
 
-import android.app.Dialog
-import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
@@ -24,13 +22,10 @@ import com.bangkit.ecojourney.R
 import com.bangkit.ecojourney.adapter.ArticleRecommendAdapter
 import com.bangkit.ecojourney.adapter.HistoryAdapter
 import com.bangkit.ecojourney.adapter.ScanResultAdapter
-import com.bangkit.ecojourney.data.ScanResult
-import com.bangkit.ecojourney.data.WasteScanned
 import com.bangkit.ecojourney.data.response.HistoryItem
 import com.bangkit.ecojourney.databinding.FragmentHistoryBinding
 import com.bangkit.ecojourney.ui.ViewModelFactory
 import com.bangkit.ecojourney.ui.article.DetailArticleFragment
-import com.bangkit.ecojourney.ui.wastescan.WasteScanFragment
 import com.bangkit.ecojourney.ui.wastescan.WasteScanViewModel
 import com.bangkit.ecojourney.utils.DateConverter
 import com.bumptech.glide.Glide
@@ -38,7 +33,6 @@ import com.bumptech.glide.request.target.Target
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import java.text.SimpleDateFormat
-import java.time.format.DateTimeFormatter
 import java.util.Date
 import java.util.Locale
 import java.util.TimeZone
@@ -157,7 +151,7 @@ class HistoryFragment : Fragment() {
                             putString(DetailArticleFragment.EXTRA_PUBLISHER, it.publisher)
                             putString(
                                 DetailArticleFragment.EXTRA_DATE,
-                                it.datePublished?.let { it1 ->
+                                it.datePublished.let { it1 ->
                                     DateConverter.formatDate(
                                         it1
                                     )

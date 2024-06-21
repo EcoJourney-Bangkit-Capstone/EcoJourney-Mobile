@@ -1,12 +1,10 @@
 package com.bangkit.ecojourney.ui.onboarding
 
-import android.app.ProgressDialog.show
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.view.WindowInsets
 import android.view.WindowManager
-import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -63,8 +61,17 @@ class RegisterActivity : AppCompatActivity() {
                 viewModel.registerResponse.observe(this) {response ->
                     if (!response.error) {
                         val intent = Intent(this, LoginActivity::class.java)
-                        startActivity(intent)
-                        finish()
+                        AlertDialog.Builder(this).apply {
+                            setTitle("Yeay! Register success")
+                            setMessage("Let's sign in to get started!")
+                            setPositiveButton("OK"){
+                                _, _ ->
+                                startActivity(intent)
+                                finish()
+                            }
+                            create()
+                            show()
+                        }
                     } else {
                         AlertDialog.Builder(this).apply {
                             setTitle("Oops! Register failed!")
