@@ -58,6 +58,7 @@ retrofit = {group = "com.squareup.retrofit2", name = "retrofit", version.ref = "
 converter-gson = {group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "retrofit"}
 logging-interceptor = {group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "httpLogging"}
 glide = { group = "com.github.bumptech.glide", name = "glide", version.ref = "glide" }
+glide-compiler = { group = "com.github.bumptech.glide", name = "compiler", version.ref = "glide" }
 
 
 [plugins]

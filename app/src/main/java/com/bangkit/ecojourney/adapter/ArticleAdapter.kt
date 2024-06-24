@@ -9,6 +9,8 @@ import com.bangkit.ecojourney.R
 import com.bangkit.ecojourney.data.response.ArticlesItem
 import com.bangkit.ecojourney.databinding.ItemArticleBinding
 import com.bangkit.ecojourney.utils.DateConverter.Companion.formatDate
+import com.bangkit.ecojourney.utils.GlideApp
+import com.bangkit.ecojourney.utils.GlideAppModule
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 
@@ -33,10 +35,10 @@ class ArticleAdapter(private val onClickCard: (ArticlesItem) -> Unit):
                 tvTitle.text = article.title
                 tvDate.text = formatDate(article.datePublished)
                 tvPublisher.text = article.publisher
-                Glide.with(binding.root)
+                GlideApp.with(binding.root)
                     .load(article.imgUrl)
-                    .apply(RequestOptions().override(100, 100))
-                    .centerCrop()
+//                    .apply(RequestOptions().override(100, 100))
+//                    .centerCrop()
                     .into(ivArticle)
             }
 

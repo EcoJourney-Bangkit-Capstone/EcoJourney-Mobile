@@ -151,7 +151,7 @@ class HistoryFragment : Fragment() {
                             putString(DetailArticleFragment.EXTRA_PUBLISHER, it.publisher)
                             putString(
                                 DetailArticleFragment.EXTRA_DATE,
-                                it.datePublished.let { it1 ->
+                                it.datePublished?.let { it1 ->
                                     DateConverter.formatDate(
                                         it1
                                     )
