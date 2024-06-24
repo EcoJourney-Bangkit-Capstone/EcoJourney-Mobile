@@ -58,16 +58,17 @@
 
             <TextView
                 android:id="@+id/tvTitle"
-                android:layout_width="wrap_content"
+                android:layout_width="230dp"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="10dp"
                 android:layout_marginTop="2dp"
+                android:paddingEnd="20dp"
+                android:clickable="true"
                 android:fontFamily="@font/inter_bold"
                 android:text="Sampah Plastik? Bisa jadi apa?"
                 android:textSize="16sp"
-                app:layout_constraintTop_toBottomOf="@+id/tvDate"
                 app:layout_constraintStart_toStartOf="parent"
-                android:clickable="true"/>
+                app:layout_constraintTop_toBottomOf="@+id/tvDate" />
 
             <TextView
                 android:id="@+id/tvPublisher"
